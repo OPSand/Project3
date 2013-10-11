@@ -10,6 +10,10 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include "armadillo"
+#include <list>
 
+using namespace arma;
+using namespace std;
 
 // TODO: reference additional headers your program requires here
