@@ -10,8 +10,9 @@ class CelestialBody
 {
 public:
 	CelestialBody(string name, double mass, SolarSystem system);
-	CelestialBody(CelestialBody &cb);
+	CelestialBody(const CelestialBody &cb);
 	~CelestialBody(void);
+	CelestialBody operator = (const CelestialBody &cb);
 	vec position;
 	vec velocity;
 	vec force;
