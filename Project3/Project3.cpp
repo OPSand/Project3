@@ -10,20 +10,23 @@ using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	mat A = randu<mat>(5,5);
-	cout << det(A) << endl << endl;
+	// flags
+	const int DIM = 2;
+	const bool FIXED_SUN = true;
 
-	mat L, U, P;
-	if( lu(L, U, P, A) )
-	{
-		cout << "LU success!" << endl;
-		cout << L << endl << endl;
-		cout << U << endl << endl;
-	}
+	// initialize solar system
+	SolarSystem system = SolarSystem();
+	
+	CelestialBody sun = CelestialBody("Sun", DIM, 100);
+	sun.fixed = FIXED_SUN;
+	system.add(sun);
+	
+	CelestialBody earth = CelestialBody("Earth", DIM, 1);
+	earth.position.fill(1);
+	earth.velocity.fill(1);
+	system.add(earth);
 
-	vec v = randu<vec>(5);
-	vec x = solve(L, v);
-	cout << x << endl << endl;
+	// TODO: iterate and plot coordinates etc.
 
 	getchar(); // pause
 

@@ -11,7 +11,9 @@
 #include <tchar.h>
 
 #include "armadillo"
-#include <list>
+
+#include "CelestialBody.h"
+#include "SolarSystem.h"
 
 using namespace arma;
 using namespace std;

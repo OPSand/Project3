@@ -1,18 +1,17 @@
 #pragma once
+
+#include "stdafx.h"
+
 class CelestialBody
 {
 public:
-	CelestialBody(string name, double mass);
+	CelestialBody(string name, int dim, double mass);
 	~CelestialBody(void);
 	vec position;
 	vec velocity;
 	vec force;
 	bool fixed;
 
-	double acc(void)
-	{
-		return 0;
-	}
 protected:
 	string _name;
 	double _mass;
@@ -20,12 +19,24 @@ public:
 
 	string name(void)
 	{
-		return string();
+		return _name;
 	}
 
 	double mass(void)
 	{
-		return 0;
+		return _mass;
 	}
+
+	vec acc(void)
+	{
+		return (force/mass());
+	}
+
+	double dist(CelestialBody cb)
+	{
+		return norm((position - cb.position), _dim);
+	}
+protected:
+	int _dim;
 };
 
