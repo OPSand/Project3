@@ -1,0 +1,280 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Project 3, FYS 3150 / 4150, fall 2013
+\end_layout
+
+\begin_layout Author
+Odd Petter Sand and Nathalie Bonatout 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The aim for this third project is to create an algorithm which should be
+ able to simulation the solar system.
+ To make things easier, we will begin by working on a system composed by
+ only two planets, the Sun and the Earth, and supposed that since the mass
+ of the Sun is larger that the mass of the Earth, the motion of the sun
+ can be neglect.
+ Then, we will progressively add more and more planets to our system.
+\end_layout
+
+\begin_layout Standard
+It is too important to underline the fact that we will consider all the
+ motions as motions in a plane.
+\end_layout
+
+\begin_layout Section
+Theory
+\end_layout
+
+\begin_layout Subsection
+System Sun - Earth 
+\end_layout
+
+\begin_layout Standard
+Newton's law of gravitation gives us the following expression:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{G}=\frac{G.M_{Earth}.M_{Sun}}{r^{2}}
+\]
+
+\end_inset
+
+where
+\begin_inset Formula $M_{Sun}$
+\end_inset
+
+ and 
+\begin_inset Formula $M_{Earth}$
+\end_inset
+
+ are, as we can expect it, the masses of the Sun and the Earth, 
+\begin_inset Formula $r$
+\end_inset
+
+ is the distance separating them, and 
+\begin_inset Formula $G$
+\end_inset
+
+ the gravitational constant.
+\end_layout
+
+\begin_layout Standard
+Thanks to this relation and to Newton's second law of motion, we can get:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{d^{2}x}{dt^{2}}=\frac{F_{G,x}}{M_{Earth}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{d^{2}y}{dt^{2}}=\frac{F_{G,y}}{M_{Earth}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $F_{G,y}$
+\end_inset
+
+ and 
+\begin_inset Formula $F_{G,x}$
+\end_inset
+
+ are the components on y and x of the gravitational force (reminder: we
+ are working in a plane, which is why we don't take into account the z component
+).
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We want now to transform the two above equations into a set of coupled first
+ order differential equations.
+\end_layout
+
+\begin_layout Standard
+We can express the components of 
+\begin_inset Formula $F$
+\end_inset
+
+ by doing a projection as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{G,x}=-\frac{G.M_{Earth}.M_{Sun}}{r^{2}}.cos(\theta)=-\frac{G.M_{Earth}.M_{Sun}}{r^{3}}.x
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F_{G,y}=-\frac{G.M_{Earth}.M_{Sun}}{r^{2}}.sin(\theta)=-\frac{G.M_{Earth}.M_{Sun}}{r^{3}}.y
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $x=rcos(\theta)$
+\end_inset
+
+ and 
+\begin_inset Formula $y=rsin(\theta)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+No idea for the name now ~
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Natsu/Desktop/Class.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+Class Diagram
+\begin_inset Quotes erd
+\end_inset
+
+ ...
+ Should evolved ;p
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\end_body
+\end_document
