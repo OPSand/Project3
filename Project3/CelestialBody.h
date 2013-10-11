@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "SolarSystem.h"
 
 using namespace arma;
 using namespace std;

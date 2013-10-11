@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include <vector>
 
 class SolarSystem
 {
@@ -18,6 +19,6 @@ public:
 		return _dim;
 	}
 protected:
-	vector<CelestialBody> _bodies;
-};
 
+	std::vector<CelestialBody> _bodies;
+};
