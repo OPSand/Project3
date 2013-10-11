@@ -122,11 +122,8 @@ where
 \begin_inset Formula $G$
 \end_inset
 
- the gravitational constant.
-\end_layout
-
-\begin_layout Standard
-Thanks to this relation and to Newton's second law of motion, we can get:
+ the gravitational constant.Thanks to this relation and to Newton's second
+ law of motion, we can get:
 \end_layout
 
 \begin_layout Standard
@@ -148,10 +145,6 @@ Thanks to this relation and to Newton's second law of motion, we can get:
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 where 
 \begin_inset Formula $F_{G,y}$
 \end_inset
@@ -214,6 +207,213 @@ where
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+So we know that, by definition,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{dv}{dt}=a
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{dx}{dt}=v
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Applied here, we got 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{dv_{x}}{dt}=-\frac{G.M_{Sun}}{r^{3}}.x\quad\frac{dv_{y}}{dt}=-\frac{G.M_{Sun}}{r^{3}}.y
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{dx}{dt}=v_{x}\quad\frac{dy}{dt}=v_{y}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By doing this, we translated our two order differential equations into one
+ order differential equations.
+ We want now to use interesting set of dimensions.
+\end_layout
+
+\begin_layout Standard
+It is relevant here to look a bit to the International System.
+ We usually process things by using second as the unit of time variable,
+ but here, we are dealing with celestial bodies.
+ Thus, we will process our data with year as time unit.
+ Furthermore, we will use the A.U.
+ (i.e.
+ Astronomical unit, the distance Sun-Earth) as the unit for the distances.
+ So in terms of units, we have here -penser à ajouter l'analyse dimensionnelle
+ ici--
+\end_layout
+
+\begin_layout Standard
+So we have here 
+\begin_inset Formula $1AU=1,5.10^{11}m$
+\end_inset
+
+ and 
+\begin_inset Formula $1year=3,2.10^{7}s$
+\end_inset
+
+.
+ The motion is supposed to be circular, thus, we have
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+M_{Earth}.a_{Earth}=F_{G}=G.M_{Earth}.M_{Sun}\quad\Leftrightarrow\quad M_{Earth}.\frac{v_{Earth}}{r_{Sun-Earth}}^{2}=G.\frac{M_{Earth}.M_{Sun}}{r_{Sun-Earth}^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus : 
+\begin_inset Formula 
+\[
+v_{Earth}^{2}=G.\frac{M_{Sun}}{r_{Sun-Earth}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, 
+\begin_inset Formula $r$
+\end_inset
+
+ is, as we said it, the distance between the Sun and the Earth.
+ Thus, equal to 1AU, according to the definition of the unit.
+\end_layout
+
+\begin_layout Standard
+Thus, we can rewrite this equation as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v_{Earth}^{2}=4\pi^{2}.[\frac{(A.U)^{2}}{year^{2}}]\quad\Leftrightarrow\quad v_{Earth}=4\pi.[\frac{AU}{year}]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We will now look at how to discretize it.
+ We are working on a continuous system, but want to male it into a discretized
+ one.
+ We will do the demonstration with the variable x, and assume that it works
+ in the same way for y.
+\end_layout
+
+\begin_layout Standard
+We know that 
+\begin_inset Formula 
+\[
+v_{x}=\frac{dx}{dt}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The step intervalle looks like 
+\begin_inset Formula $[t_{0};t_{max}]$
+\end_inset
+
+.
+ We will work on 
+\begin_inset Formula $n_{Steps}$
+\end_inset
+
+.
+ Let's define h as 
+\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}}$
+\end_inset
+
+.
+ Thus we have:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+t_{i}=t_{0}+i.h\text{ for each i belonging to {\displaystyle [0,n_{Steps}],} }
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can now define 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{i}=x(t_{i})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By using Taylor's expansion, we have 
+\begin_inset Formula $x_{i+1}=x_{i}+h.v_{x,i}+\frac{h}{2!}^{2}.a_{x,i}(t)+\frac{h^{3}}{3!}.o(h^{5})\quad x_{i-1}=x_{i}-h.v_{x,i}(t)+\frac{h^{2}}{2!}.a_{x,i}(t)+o(h^{3})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thus [Work in Progress !!]
 \end_layout
 
 \begin_layout Subsection

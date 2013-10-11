@@ -2,6 +2,8 @@
 #include "CelestialBody.h"
 #include "SolarSystem.h"
 
+using namespace arma;
+
 CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
 {
 	// set protected member variables
@@ -10,9 +12,9 @@ CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
 	_dim = system.dim();
 
 	// set dimensions
-	position(_dim);
-	velocity(_dim);
-	force(_dim);
+	position = vec(_dim);
+	velocity = vec(_dim);
+	force = vec(_dim);
 
 	// default values
 	fixed = false;
