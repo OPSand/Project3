@@ -18,7 +18,4 @@ public:
 	{
 		return _dim;
 	}
-protected:
-
-	std::vector<CelestialBody> _bodies;
 };
