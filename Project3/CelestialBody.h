@@ -8,7 +8,7 @@ using namespace std;
 class CelestialBody
 {
 public:
-	CelestialBody(string name, int dim, double mass);
+	CelestialBody(string name, double mass, SolarSystem system);
 	~CelestialBody(void);
 	vec position;
 	vec velocity;

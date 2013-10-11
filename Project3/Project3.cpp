@@ -15,16 +15,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool FIXED_SUN = true;
 
 	// initialize solar system
-	SolarSystem system = SolarSystem();
+	SolarSystem system = SolarSystem(DIM);
 	
-	CelestialBody sun = CelestialBody("Sun", DIM, 100);
+	CelestialBody sun = CelestialBody("Sun", 100, system);
 	sun.fixed = FIXED_SUN;
-	system.add(sun);
 	
-	CelestialBody earth = CelestialBody("Earth", DIM, 1);
+	CelestialBody earth = CelestialBody("Earth", 1, system);
 	earth.position.fill(1);
 	earth.velocity.fill(1);
-	system.add(earth);
 
 	// TODO: iterate and plot coordinates etc.
 

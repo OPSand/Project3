@@ -5,19 +5,19 @@
 class SolarSystem
 {
 public:
-	SolarSystem(void);
+	SolarSystem(int dim);
 	~SolarSystem(void);
 	void setForces(void);
-//	list<CelestialBody> bodies;
 
-	void add(CelestialBody cb)
+protected:
+	int _dim;
+public:
+
+	int dim(void)
 	{
-		// bodies.push_back(cb);
+		return _dim;
 	}
 protected:
-	CelestialBody* _bodies;
-//	int maxSize;
-	int _capacity;
-	int _count;
+	vector<CelestialBody> _bodies;
 };
 

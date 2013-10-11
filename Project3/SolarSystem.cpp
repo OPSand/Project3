@@ -2,10 +2,11 @@
 #include "SolarSystem.h"
 
 
-SolarSystem::SolarSystem(void)
+SolarSystem::SolarSystem(int dim)
 {
-	_capacity = 0;
-	_count = 0;
+	_dim = dim;
+
+	_bodies = vector<CelestialBody>();
 }
 
 

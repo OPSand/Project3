@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "CelestialBody.h"
+#include "SolarSystem.h"
 
-
-CelestialBody::CelestialBody(string name, int dim, double mass)
+CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
 {
 	// set protected member variables
 	_name = name;
 	_mass = mass;
-	_dim = dim;
+	_dim = system.dim();
 
 	// set dimensions
 	position(_dim);
