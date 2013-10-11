@@ -2,6 +2,9 @@
 
 #include "stdafx.h"
 
+using namespace arma;
+using namespace std;
+
 class CelestialBody
 {
 public:
