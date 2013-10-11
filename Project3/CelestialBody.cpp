@@ -7,20 +7,31 @@ using namespace arma;
 CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
 {
 	// set protected member variables
-	_name = name;
-	_mass = mass;
-	_dim = system.dim();
+	this->_name = name;
+	this->_mass = mass;
+	this->_dim = system.dim();
 
 	// set dimensions
-	position = vec(_dim);
-	velocity = vec(_dim);
-	force = vec(_dim);
+	this->position = vec(_dim);
+	this->velocity = vec(_dim);
+	this->force = vec(_dim);
 
 	// default values
-	fixed = false;
-	position.fill(0);
-	velocity.fill(0);
-	force.fill(0);
+	this->fixed = false;
+	this->position.fill(0);
+	this->velocity.fill(0);
+	this->force.fill(0);
+}
+
+// copy constructor
+CelestialBody::CelestialBody(CelestialBody &cb)
+{
+	this->_name = cb._name;
+	this->_mass = cb._mass;
+	this->_dim = cb._dim;
+
+	this->position = cb.position;
+	//...
 }
 
 

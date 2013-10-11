@@ -10,6 +10,7 @@ class CelestialBody
 {
 public:
 	CelestialBody(string name, double mass, SolarSystem system);
+	CelestialBody(CelestialBody &cb);
 	~CelestialBody(void);
 	vec position;
 	vec velocity;
