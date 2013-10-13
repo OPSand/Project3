@@ -13,10 +13,10 @@ CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
 	this->_mass = mass;
 	this->_dim = system.dim();
 
-	// set dimensions
-	this->position = vec(_dim);
-	this->velocity = vec(_dim);
-	this->force = vec(_dim);
+	// initialize vectors with correct dimension
+	this->position = vec(this->_dim);
+	this->velocity = vec(this->_dim);
+	this->force = vec(this->_dim);
 
 	// default values
 	this->fixed = false;
@@ -34,7 +34,7 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 
 	this->fixed = cb.fixed;
 
-	// Armadillo being Armadillo, these should be copied, not just passed by reference.
+	// Armadillo being Armadillo, these should be copied, not just passed by reference (we hope).
 	this->position = cb.position;
 	this->velocity = cb.velocity;
 	this->force = cb.force;
@@ -54,14 +54,13 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 		this->_name = cb._name;
 		this->_mass = cb._mass;
 		this->_dim = cb._dim;
-
 		this->fixed = cb.fixed;
 
-		// Armadillo being Armadillo, these should be copied, not just passed by reference.
+		// Armadillo being Armadillo, these should be copied, not just passed by reference (we hope).
 		this->position = cb.position;
 		this->velocity = cb.velocity;
 		this->force = cb.force;
 	}
 
-	return *this; // convention
+	return *this; // to allow operator chaining: a = b = c
 }

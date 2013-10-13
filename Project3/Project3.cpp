@@ -2,11 +2,8 @@
 //
 
 #include "stdafx.h"
-#include"armadillo"
-#include<list>
-
-using namespace arma;
-using namespace std; 
+#include "SolarSystem.h"
+#include "CelestialBody.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -19,14 +16,21 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	CelestialBody sun = CelestialBody("Sun", 100, system);
 	sun.fixed = FIXED_SUN;
+	system.add(sun);
 	
 	CelestialBody earth = CelestialBody("Earth", 1, system);
 	earth.position.fill(1);
 	earth.velocity.fill(1);
+	system.add(earth);
+
+	for( int i = 0; i < system.n(); i++ )
+	{
+		cout << system.body(i).name() << endl;
+	}
 
 	// TODO: iterate and plot coordinates etc.
 
 	getchar(); // pause
 
-	return 0;
+	return 0; // exit
 }

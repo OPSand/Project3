@@ -6,6 +6,8 @@
 using namespace arma;
 using namespace std;
 
+class SolarSystem; // forward declaration to avoid circular reference
+
 class CelestialBody
 {
 public:
@@ -21,6 +23,7 @@ public:
 protected:
 	string _name;
 	double _mass;
+	int _dim;
 public:
 
 	string name(void)
@@ -33,16 +36,22 @@ public:
 		return _mass;
 	}
 
+	// returns the acceleration when the force is set
 	vec acc(void)
 	{
 		return (force/mass());
 	}
 
+	// returns the position of cb relative to this in vector form
+	vec position_diff(CelestialBody cb)
+	{
+		return (cb.position - this->position);
+	}
+
+	// returns the distance between this and cb as a scalar
 	double dist(CelestialBody cb)
 	{
-		return norm((position - cb.position), _dim);
-	}
-protected:
-	int _dim;
+		return norm(this->position_diff(cb), _dim);
+	}	
 };
 

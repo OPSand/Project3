@@ -11,11 +11,7 @@
 #include <tchar.h>
 
 #include "armadillo"
-
-#include "CelestialBody.h"
-#include "SolarSystem.h"
+#include <vector>
 
 using namespace arma;
 using namespace std;
-
-// TODO: reference additional headers your program requires here
