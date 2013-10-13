@@ -5,13 +5,13 @@
 using namespace std;
 using namespace arma;
 
-// constructor
-CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
+// constructor (system passed by reference so we do not copy it)
+CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* system)
 {
 	// set protected member variables
 	this->_name = name;
 	this->_mass = mass;
-	this->_dim = system.dim();
+	this->_dim = system->dim();
 
 	// initialize vectors with correct dimension
 	this->position = vec(this->_dim);
@@ -23,6 +23,9 @@ CelestialBody::CelestialBody(string name, double mass, SolarSystem system)
 	this->position.fill(0);
 	this->velocity.fill(0);
 	this->force.fill(0);
+
+	// add to system
+	system->add(this);
 }
 
 // copy constructor

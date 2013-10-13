@@ -9,7 +9,7 @@ class SolarSystem
 {
 protected:
 	int _dim;
-	vector<CelestialBody> _bodies; // list of celestial bodies in solar system
+	vector<CelestialBody*> _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 
 public:
 	SolarSystem(int dim);
@@ -29,8 +29,8 @@ public:
 	}
 
 	// return a celestial body at the index i
-	CelestialBody body(int i);
+	CelestialBody* body(int i);
 
 	// add a new celecstial body to solar system
-	void add(CelestialBody cb);
+	void add(CelestialBody* cb);
 };
