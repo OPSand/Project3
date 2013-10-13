@@ -15,31 +15,21 @@ public:
 	CelestialBody(const CelestialBody &cb);
 	~CelestialBody(void);
 	CelestialBody operator = (const CelestialBody &cb);
+	string name;
+	double mass;
 	vec position;
 	vec velocity;
 	vec force;
 	bool fixed;
 
 protected:
-	string _name;
-	double _mass;
 	int _dim;
 public:
-
-	string name(void)
-	{
-		return this->_name;
-	}
-
-	double mass(void)
-	{
-		return this->_mass;
-	}
 
 	// returns the acceleration when the force is set
 	vec acc(void)
 	{
-		return (this->force/this->mass());
+		return (this->force/this->mass);
 	}
 
 	// returns the position of cb relative to this in vector form

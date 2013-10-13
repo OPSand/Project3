@@ -21,10 +21,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	earth.position.fill(1);
 	earth.velocity.fill(1);
 
+	// debug
+	system.setForces();
 	for( int i = 0; i < system.n(); i++ )
 	{
-		cout << system.body(i)->name() << endl;
+		cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl;
 	}
+	// end debug
 
 	// TODO: iterate and plot coordinates etc.
 

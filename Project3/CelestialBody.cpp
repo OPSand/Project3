@@ -9,8 +9,8 @@ using namespace arma;
 CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* system)
 {
 	// set protected member variables
-	this->_name = name;
-	this->_mass = mass;
+	this->name = name;
+	this->mass = mass;
 	this->_dim = system->dim();
 
 	// initialize vectors with correct dimension
@@ -31,8 +31,8 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 // copy constructor
 CelestialBody::CelestialBody(const CelestialBody &cb)
 {
-	this->_name = cb._name;
-	this->_mass = cb._mass;
+	this->name = cb.name;
+	this->mass = cb.mass;
 	this->_dim = cb._dim;
 
 	this->fixed = cb.fixed;
@@ -54,8 +54,8 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 {
 	if( this != &cb ) // protect against invalid self-assignment
 	{
-		this->_name = cb._name;
-		this->_mass = cb._mass;
+		this->name = cb.name;
+		this->mass = cb.mass;
 		this->_dim = cb._dim;
 		this->fixed = cb.fixed;
 
