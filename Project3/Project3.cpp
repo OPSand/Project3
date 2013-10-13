@@ -18,7 +18,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	sun.fixed = FIXED_SUN;
 	
 	CelestialBody earth = CelestialBody("Earth", 1, &system);
-	earth.position.fill(1);
+	earth.position(0) = -1.0; // x = -1
+	earth.position(1) = 5.0; // y = 5
 	earth.velocity.fill(1);
 
 	// debug
