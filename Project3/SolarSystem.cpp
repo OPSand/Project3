@@ -42,7 +42,7 @@ void SolarSystem::setForces(void)
 			
 			double dist = cb_i.dist(cb_j); // distance (absolute value)
 			vec r = cb_i.position_diff(cb_j); // gives the force the proper direction
-			vec F = (G * cb_i.mass() * cb_j.mass() / pow(dist, 3.0)) * r;
+			vec F = (G * cb_i.mass() * cb_j.mass() / pow(dist, 3.0)) * r; // Newton's law of gravity
 
 			cb_i.force += F; // add force contribution to i
 			cb_j.force -= F; // add force contribution to j (Newton's 3rd law)
