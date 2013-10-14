@@ -17,7 +17,8 @@ SolarSystem::~SolarSystem(void)
 void SolarSystem::setForces(void)
 {
 	// gravitational constant
-	const double G = 6.67385e-11; // N (m/kg)^2
+	const double G = 2.98212345e-33; // N (AU/kg)^2
+	// const double G = 6.67385e-11; // N (m/kg)^2
 
 	int n = this->n();
 	for( int i = 0; i < (n - 1); i++ ) // i: 0 -> n-2
