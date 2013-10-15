@@ -5,12 +5,35 @@
 #include "SolarSystem.h"
 #include "CelestialBody.h"
 
+// converts polar coordinates to cartesian coordinates
 vec toCartesian2D(double r, double theta)
 {
 	vec p = vec(2);
 	p[0] = r*cos(theta); // x
 	p[1] = r*sin(theta); // y
 	return p;
+}
+
+// returns an angle in radians that is orthogonal to theta
+double orthogonal2D(double theta, bool clockwise = false)
+{
+	if( clockwise )
+	{
+		return (theta - 0.5 * math::pi());
+	}
+	else // counterclockwise
+	{
+		return (theta + 0.5 * math::pi());
+	}
+}
+
+// sets a position vector of length d at angle theta, and
+// an orthogonal velocity vector of length v
+// to help with initialization of celestial bodies
+void initial2D(CelestialBody* cb, double d, double v, double theta)
+{
+	cb->position = toCartesian2D(d, theta);
+	cb->velocity = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -43,6 +66,29 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double D_NEPTUNE = 30.06;
 	const double D_PLUTO = 39.53;
 
+	// polar angles (position) in radians
+	const double THETA_EARTH = (4.0/6.0) * math::pi();
+	const double THETA_JUPITER = 0.0 * math::pi();
+	const double THETA_MARS = 0.0 * math::pi();
+	const double THETA_VENUS = 0.0 * math::pi();
+	const double THETA_SATURN = 0.0 * math::pi();
+	const double THETA_MERCURY = 0.0 * math::pi();
+	const double THETA_URANUS = 0.0 * math::pi();
+	const double THETA_NEPTUNE = 0.0 * math::pi();
+	const double THETA_PLUTO = 0.0 * math::pi();
+
+	// initial velocities (absolute value) in AU/s
+	const double V_SUN = 0.0;
+	const double V_EARTH = 1.0;
+	const double V_JUPITER = 1.0;
+	const double V_MARS = 1.0;
+	const double V_VENUS = 1.0;
+	const double V_SATURN = 1.0;
+	const double V_MERCURY = 1.0;
+	const double V_URANUS = 1.0;
+	const double V_NEPTUNE = 1.0;
+	const double V_PLUTO = 1.0;
+
 	// initialize solar system
 	SolarSystem system = SolarSystem(DIM);
 	
@@ -50,15 +96,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	sun.fixed = FIXED_SUN;
 	
 	CelestialBody earth = CelestialBody("Earth", M_EARTH, &system);
-	const double THETA_EARTH = (4.0/6.0) * math::pi();
-	earth.position = toCartesian2D(D_EARTH, THETA_EARTH);
-	earth.velocity = toCartesian2D(100, (THETA_EARTH + 0.5 * math::pi()));
+	initial2D(&earth, D_EARTH, V_EARTH, THETA_EARTH);
+
+	CelestialBody jupiter = CelestialBody("Jupiter", M_JUPITER, &system);
+	initial2D(&jupiter, D_JUPITER, V_JUPITER, THETA_JUPITER);
 
 	// debug
 	system.setForces();
 	for( int i = 0; i < system.n(); i++ )
 	{
-		cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl;
+		cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl << "Pos:" << endl << system.body(i)->position << endl << "Vel:" << endl << system.body(i)->velocity << endl;
 	}
 	// end debug
 
