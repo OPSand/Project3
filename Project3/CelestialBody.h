@@ -11,7 +11,7 @@ class SolarSystem; // forward declaration to avoid circular reference
 class CelestialBody
 {
 public:
-	CelestialBody(const string& name, double mass, SolarSystem* system);
+	CelestialBody(const string& name, double mass, SolarSystem* system, bool fixed = false);
 	CelestialBody(const CelestialBody &cb);
 	~CelestialBody(void);
 	CelestialBody operator = (const CelestialBody &cb);

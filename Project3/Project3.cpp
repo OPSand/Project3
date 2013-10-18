@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "SolarSystem.h"
 #include "CelestialBody.h"
+#include <random>
 
 // converts polar coordinates to cartesian coordinates
 vec toCartesian2D(double r, double theta)
@@ -19,19 +20,31 @@ double orthogonal2D(double theta, bool clockwise = false)
 {
 	if( clockwise )
 	{
-		return (theta - 0.5 * math::pi());
+		return (theta - 0.5 * cPI);
 	}
 	else // counterclockwise
 	{
-		return (theta + 0.5 * math::pi());
+		return (theta + 0.5 * cPI);
 	}
+}
+
+// return a random floating point number in the interval [minIncl, maxExcl).
+double randDbl(double minIncl, double maxExcl, minstd_rand* eng)
+{
+	uniform_real<double> rd(0.0, (2*cPI));
+	return rd(*eng);
 }
 
 // sets a position vector of length d at angle theta, and
 // an orthogonal velocity vector of length v
 // to help with initialization of celestial bodies
-void initial2D(CelestialBody* cb, double d, double v, double theta)
+void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double theta = -1.0)
 {
+	if( theta == -1.0 ) // no angle given
+	{
+		// create random angle
+		theta = randDbl(0.0, (2*cPI), eng);
+	}
 	cb->position = toCartesian2D(d, theta);
 	cb->velocity = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
 }
@@ -54,52 +67,77 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double M_NEPTUNE = 1.03e26;
 	const double M_PLUTO = 1.31e22;
 
-	// distances from Sun (AU)
-	const double D_SUN = 0.0;
-	const double D_EARTH = 1.0;
-	const double D_JUPITER = 5.2;
-	const double D_MARS = 1.52;
-	const double D_VENUS = 0.72;
-	const double D_SATURN = 9.54;
-	const double D_MERCURY = 0.39;
-	const double D_URANUS = 19.19;
-	const double D_NEPTUNE = 30.06;
-	const double D_PLUTO = 39.53;
+	// distances from Sun (m)
+	const double D_SUN = 0.0 * cAU;
+	const double D_EARTH = 1.0 * cAU;
+	const double D_JUPITER = 5.2 * cAU;
+	const double D_MARS = 1.52 * cAU;
+	const double D_VENUS = 0.72 * cAU;
+	const double D_SATURN = 9.54 * cAU;
+	const double D_MERCURY = 0.39 * cAU;
+	const double D_URANUS = 19.19 * cAU;
+	const double D_NEPTUNE = 30.06 * cAU;
+	const double D_PLUTO = 39.53 * cAU;
 
-	// polar angles (position) in radians
-	const double THETA_EARTH = (4.0/6.0) * math::pi();
-	const double THETA_JUPITER = 0.0 * math::pi();
-	const double THETA_MARS = 0.0 * math::pi();
-	const double THETA_VENUS = 0.0 * math::pi();
-	const double THETA_SATURN = 0.0 * math::pi();
-	const double THETA_MERCURY = 0.0 * math::pi();
-	const double THETA_URANUS = 0.0 * math::pi();
-	const double THETA_NEPTUNE = 0.0 * math::pi();
-	const double THETA_PLUTO = 0.0 * math::pi();
+	/* polar angles (position) in radians (not used)
+	const double THETA_EARTH = 0.0 * cPI;
+	const double THETA_JUPITER = 0.0 * cPI;
+	const double THETA_MARS = 0.0 * cPI;
+	const double THETA_VENUS = 0.0 * cPI;
+	const double THETA_SATURN = 0.0 * cPI;
+	const double THETA_MERCURY = 0.0 * cPI;
+	const double THETA_URANUS = 0.0 * cPI;
+	const double THETA_NEPTUNE = 0.0 * cPI;
+	const double THETA_PLUTO = 0.0 * cPI; */
 
-	// initial velocities (absolute value) in AU/s
+	// initial velocities (absolute value) in m/s
 	const double V_SUN = 0.0;
-	const double V_EARTH = 1.0;
-	const double V_JUPITER = 1.0;
-	const double V_MARS = 1.0;
-	const double V_VENUS = 1.0;
-	const double V_SATURN = 1.0;
-	const double V_MERCURY = 1.0;
-	const double V_URANUS = 1.0;
-	const double V_NEPTUNE = 1.0;
-	const double V_PLUTO = 1.0;
+	const double V_EARTH = 29.8e3;
+	const double V_JUPITER = 13.1e3;
+	const double V_MARS = 24.1e3;
+	const double V_VENUS = 35.0e3;
+	const double V_SATURN = 9.7e3;
+	const double V_MERCURY = 47.9e3; // Don't stop me now...
+	const double V_URANUS = 6.8e3;
+	const double V_NEPTUNE = 5.4e3;
+	const double V_PLUTO = 4.7e3;
+
+	// intitialze random number engine
+	minstd_rand eng;
+	int randomSeed = (int) clock();
+	eng.seed(randomSeed);
 
 	// initialize solar system
 	SolarSystem system = SolarSystem(DIM);
 	
-	CelestialBody sun = CelestialBody("Sun", M_SUN, &system);
-	sun.fixed = FIXED_SUN;
+	CelestialBody sun = CelestialBody("Sun", M_SUN, &system, FIXED_SUN);
 	
+	CelestialBody mercury = CelestialBody("Mercury", M_MERCURY, &system);
+	initial2D(&mercury, D_MERCURY, V_MERCURY, &eng);
+
+	CelestialBody venus = CelestialBody("Venus", M_VENUS, &system);
+	initial2D(&venus, D_VENUS, V_VENUS, &eng);
+
 	CelestialBody earth = CelestialBody("Earth", M_EARTH, &system);
-	initial2D(&earth, D_EARTH, V_EARTH, THETA_EARTH);
+	initial2D(&earth, D_EARTH, V_EARTH, &eng);
+
+	CelestialBody mars = CelestialBody("Mars", M_MARS, &system);
+	initial2D(&mars, D_MARS, V_MARS, &eng);
 
 	CelestialBody jupiter = CelestialBody("Jupiter", M_JUPITER, &system);
-	initial2D(&jupiter, D_JUPITER, V_JUPITER, THETA_JUPITER);
+	initial2D(&jupiter, D_JUPITER, V_JUPITER, &eng);
+
+	CelestialBody saturn = CelestialBody("Saturn", M_SATURN, &system);
+	initial2D(&saturn, D_SATURN, V_SATURN, &eng);
+
+	CelestialBody uranus = CelestialBody("Uranus", M_URANUS, &system);
+	initial2D(&uranus, D_URANUS, V_URANUS, &eng);
+
+	CelestialBody neptune = CelestialBody("Neptune", M_NEPTUNE, &system);
+	initial2D(&neptune, D_NEPTUNE, V_NEPTUNE, &eng);
+
+	CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
+	initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
 
 	// debug
 	system.setForces();

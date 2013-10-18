@@ -16,10 +16,6 @@ SolarSystem::~SolarSystem(void)
 
 void SolarSystem::setForces(void)
 {
-	// gravitational constant
-	const double G = 2.98212345e-33; // N (AU/kg)^2
-	// const double G = 6.67385e-11; // N (m/kg)^2
-
 	int n = this->n();
 	for( int i = 0; i < (n - 1); i++ ) // i: 0 -> n-2
 	{
@@ -43,7 +39,7 @@ void SolarSystem::setForces(void)
 			
 			double dist = cb_i->dist(cb_j); // distance (absolute value)
 			vec r = cb_i->position_diff(cb_j); // gives the force the proper direction
-			vec F = (G * cb_i->mass * cb_j->mass / pow(dist, 3.0)) * r; // Newton's law of gravity
+			vec F = (cG * cb_i->mass * cb_j->mass / pow(dist, 3.0)) * r; // Newton's law of gravity
 
 			cb_i->force += F; // add force contribution to i
 			cb_j->force -= F; // add force contribution to j (Newton's 3rd law)

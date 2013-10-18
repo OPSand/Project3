@@ -6,7 +6,7 @@ using namespace std;
 using namespace arma;
 
 // constructor (system passed by reference so we do not copy it)
-CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* system)
+CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* system, bool fixed)
 {
 	// set protected member variables
 	this->name = name;
@@ -19,7 +19,7 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	this->force = vec(this->_dim);
 
 	// default values
-	this->fixed = false;
+	this->fixed = fixed;
 	this->position.fill(0);
 	this->velocity.fill(0);
 	this->force.fill(0);

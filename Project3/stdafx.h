@@ -13,5 +13,7 @@
 #include "armadillo"
 #include <vector>
 
+#include "constants.h"
+
 using namespace arma;
 using namespace std;
