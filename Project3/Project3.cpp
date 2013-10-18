@@ -5,6 +5,7 @@
 #include "SolarSystem.h"
 #include "CelestialBody.h"
 #include <random>
+#include <assert.h>
 
 // converts polar coordinates to cartesian coordinates
 vec toCartesian2D(double r, double theta)
@@ -51,9 +52,13 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	// flags
+	// dimensions
 	const int DIM = 2;
+
+	// flags
+	const bool ADD_JUPITER = true;
 	const bool FIXED_SUN = true;
+	const bool ADD_ALL = true;
 
 	// masses
 	const double M_SUN = 2e30;
@@ -79,7 +84,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double D_NEPTUNE = 30.06 * cAU;
 	const double D_PLUTO = 39.53 * cAU;
 
-	/* polar angles (position) in radians (not used)
+	/* polar angles (position) in radians (to override random values if needed)
 	const double THETA_EARTH = 0.0 * cPI;
 	const double THETA_JUPITER = 0.0 * cPI;
 	const double THETA_MARS = 0.0 * cPI;
@@ -112,32 +117,44 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	CelestialBody sun = CelestialBody("Sun", M_SUN, &system, FIXED_SUN);
 	
-	CelestialBody mercury = CelestialBody("Mercury", M_MERCURY, &system);
-	initial2D(&mercury, D_MERCURY, V_MERCURY, &eng);
-
-	CelestialBody venus = CelestialBody("Venus", M_VENUS, &system);
-	initial2D(&venus, D_VENUS, V_VENUS, &eng);
-
 	CelestialBody earth = CelestialBody("Earth", M_EARTH, &system);
 	initial2D(&earth, D_EARTH, V_EARTH, &eng);
 
-	CelestialBody mars = CelestialBody("Mars", M_MARS, &system);
-	initial2D(&mars, D_MARS, V_MARS, &eng);
+	if( ADD_JUPITER )
+	{
+		CelestialBody jupiter = CelestialBody("Jupiter", M_JUPITER, &system);
+		initial2D(&jupiter, D_JUPITER, V_JUPITER, &eng);
+	}
 
-	CelestialBody jupiter = CelestialBody("Jupiter", M_JUPITER, &system);
-	initial2D(&jupiter, D_JUPITER, V_JUPITER, &eng);
+	if( ADD_ALL )
+	{
+		CelestialBody mercury = CelestialBody("Mercury", M_MERCURY, &system);
+		initial2D(&mercury, D_MERCURY, V_MERCURY, &eng);
 
-	CelestialBody saturn = CelestialBody("Saturn", M_SATURN, &system);
-	initial2D(&saturn, D_SATURN, V_SATURN, &eng);
+		CelestialBody venus = CelestialBody("Venus", M_VENUS, &system);
+		initial2D(&venus, D_VENUS, V_VENUS, &eng);
+		
+		CelestialBody mars = CelestialBody("Mars", M_MARS, &system);
+		initial2D(&mars, D_MARS, V_MARS, &eng);
 
-	CelestialBody uranus = CelestialBody("Uranus", M_URANUS, &system);
-	initial2D(&uranus, D_URANUS, V_URANUS, &eng);
+		CelestialBody saturn = CelestialBody("Saturn", M_SATURN, &system);
+		initial2D(&saturn, D_SATURN, V_SATURN, &eng);
 
-	CelestialBody neptune = CelestialBody("Neptune", M_NEPTUNE, &system);
-	initial2D(&neptune, D_NEPTUNE, V_NEPTUNE, &eng);
+		CelestialBody uranus = CelestialBody("Uranus", M_URANUS, &system);
+		initial2D(&uranus, D_URANUS, V_URANUS, &eng);
 
-	CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
-	initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
+		CelestialBody neptune = CelestialBody("Neptune", M_NEPTUNE, &system);
+		initial2D(&neptune, D_NEPTUNE, V_NEPTUNE, &eng);
+
+		CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
+		initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
+	}
+
+	if( ! FIXED_SUN )
+	{
+		sun.velocity = (-system.totalMomentum() / sun.mass); // v = p/m;
+		assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
+	}
 
 	// debug
 	system.setForces();

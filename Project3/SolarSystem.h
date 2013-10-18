@@ -33,4 +33,7 @@ public:
 
 	// add a new celecstial body to solar system
 	void add(CelestialBody* cb);
+
+	// return total momentum of system
+	vec totalMomentum(void);
 };

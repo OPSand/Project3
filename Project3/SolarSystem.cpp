@@ -34,7 +34,7 @@ void SolarSystem::setForces(void)
 			// reset on first pass (1 -> n-1)
 			if( i == 0 )
 			{
-				cb_j->force.fill(0);
+				cb_j->force.fill(0.0);
 			}
 			
 			double dist = cb_i->dist(cb_j); // distance (absolute value)
@@ -57,4 +57,22 @@ CelestialBody* SolarSystem::body(int i)
 void SolarSystem::add(CelestialBody* cb)
 {
 	this->_bodies.push_back(cb); // append to end of vector
+}
+
+// return total momentum of system
+vec SolarSystem::totalMomentum()
+{
+	vec mom(this->_dim);
+	mom.fill(0.0);
+
+	for(int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->_bodies[i];
+		if( ! cb_i->fixed ) // fixed bodies never move
+		{
+			mom += (cb_i->mass * cb_i->velocity); // add p = m*v (non-relativistic)
+		}
+	}
+
+	return mom;
 }
