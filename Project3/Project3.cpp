@@ -59,9 +59,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N_STEPS = 1000;
 
 	// flags
-	const bool ADD_JUPITER = true;
-	const bool FIXED_SUN = true;
-	const bool ADD_ALL = true;
+#define ADD_JUPITER	
+#define ADD_ALL	
+
+	const bool FIXED_SUN=false;
 
 	// masses
 	const double M_SUN = 2e30;
@@ -123,14 +124,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	CelestialBody earth = CelestialBody("Earth", M_EARTH, &system);
 	initial2D(&earth, D_EARTH, V_EARTH, &eng);
 
-	if( ADD_JUPITER )
-	{
+#ifdef ADD_JUPITER
 		CelestialBody jupiter = CelestialBody("Jupiter", M_JUPITER, &system);
 		initial2D(&jupiter, D_JUPITER, V_JUPITER, &eng);
-	}
+#endif
 
-	if( ADD_ALL )
-	{
+#ifdef ADD_ALL
 		CelestialBody mercury = CelestialBody("Mercury", M_MERCURY, &system);
 		initial2D(&mercury, D_MERCURY, V_MERCURY, &eng);
 
@@ -151,12 +150,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
 		initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
-	}
+#endif
 
 	if( ! FIXED_SUN )
 	{
 		sun.velocity = (-system.totalMomentum() / sun.mass); // v = p/m;
-		assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
+		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
 	}
 
 	// debug
