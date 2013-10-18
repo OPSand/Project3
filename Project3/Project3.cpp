@@ -61,7 +61,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// flags
 #define ADD_JUPITER	
 #define ADD_ALL	
-
+#define DEBUG
 	const bool FIXED_SUN=false;
 
 	// masses
@@ -158,13 +158,26 @@ int _tmain(int argc, _TCHAR* argv[])
 		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
 	}
 
-	// debug
+#ifdef DEBUG
 	system.setForces();
 	for( int i = 0; i < system.n(); i++ )
 	{
 		cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl << "Pos:" << endl << system.body(i)->position << endl << "Vel:" << endl << system.body(i)->velocity << endl;
 	}
-	// end debug
+
+	for( int i = 0; i < N_STEPS; i++ )
+	{
+		vec v(DIM);
+		v(0) = i;
+		v(1) = 2*i;
+		jupiter.position = v;
+		if( ! jupiter.plotCurrentPosition() )
+		{
+			cout << "plot matrix full! :S" << endl;
+		}
+	}
+	cout << jupiter.plot;
+#endif
 
 	// TODO: iterate and plot coordinates etc.
 

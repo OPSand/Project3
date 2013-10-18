@@ -83,7 +83,11 @@ bool CelestialBody::plotCurrentPosition()
 {
 	if( this->_currentStep < this->plot.n_rows )
 	{
-		this->plot.row(this->_currentStep) = (rowvec) this->position;
+		for( int j = 0; j < this->plot.n_cols; j++ )
+		{
+			this->plot(this->_currentStep, j) = this->position(j);
+		}
+
 		this->_currentStep++;
 		return true;
 	}
