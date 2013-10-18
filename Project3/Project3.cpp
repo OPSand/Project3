@@ -55,6 +55,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	// dimensions
 	const int DIM = 2;
 
+	// number of time steps
+	const int N_STEPS = 1000;
+
 	// flags
 	const bool ADD_JUPITER = true;
 	const bool FIXED_SUN = true;
@@ -113,7 +116,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	eng.seed(randomSeed);
 
 	// initialize solar system
-	SolarSystem system = SolarSystem(DIM);
+	SolarSystem system = SolarSystem(DIM, N_STEPS);
 	
 	CelestialBody sun = CelestialBody("Sun", M_SUN, &system, FIXED_SUN);
 	

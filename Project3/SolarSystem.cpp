@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "SolarSystem.h"
 
-SolarSystem::SolarSystem(int dim)
+SolarSystem::SolarSystem(int dim, int nSteps)
 {
 	this->_dim = dim;
+	this->_nSteps = nSteps;
 	this->_bodies = vector<CelestialBody*>();
 }
 

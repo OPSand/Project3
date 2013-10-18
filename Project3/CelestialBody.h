@@ -21,9 +21,11 @@ public:
 	vec velocity;
 	vec force;
 	bool fixed;
+	mat plot;
 
 protected:
 	int _dim;
+	int _currentStep; // used for plotting
 public:
 
 	// returns the acceleration when the force is set
@@ -42,6 +44,9 @@ public:
 	double dist(CelestialBody* cb)
 	{
 		return norm(this->position_diff(cb), this->_dim);
-	}	
-};
+	}
 
+	// add current position to plot matrix (increments _currentStep afterwards)
+	// returns true if room, false if not
+	bool plotCurrentPosition(void);
+};
