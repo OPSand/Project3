@@ -166,7 +166,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// compiler flags
 	#define ADD_JUPITER
 	#define ADD_ALL	
-	// #define DEBUG
+	#define DEBUG
 
 	// if set to true, the Sun will never move
 	const bool FIXED_SUN = false;
@@ -280,6 +280,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl << "Pos:" << endl << system.body(i)->position << endl << "Vel:" << endl << system.body(i)->velocity << endl;
 	}
 
+	/* 
 	for( int i = 0; i < N_STEPS; i++ )
 	{
 		vec v(DIM);
@@ -290,8 +291,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "plot matrix full! :S" << endl;
 		}
-	}
-	cout << jupiter->plot;
+	} 
+	cout << jupiter->plot; */
 
 	for( int i = 0; i < system.n(); i++ )
 	{
@@ -342,9 +343,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
 #pragma endregion
-
 #endif
 	
+#ifdef DEBUG
 	CelestialBody* Earth = system.body(1);
 	int n = system.n();
 	int t= 0;
@@ -354,7 +355,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
 		t+=DELTA_T;
 	}
-
+#endif
 
 	getchar(); // pause
 

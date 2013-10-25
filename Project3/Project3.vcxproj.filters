@@ -51,9 +51,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Simulation.cs">
-      <Filter>Source Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>
