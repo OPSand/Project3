@@ -13,7 +13,7 @@ SolarSystem::~SolarSystem(void)
 {
 	while( this->n() > 0 ) // counter will be updated automatically
 	{
-		CelestialBody* cb = this->body(this->n()); // return last element
+		CelestialBody* cb = this->body(this->n() - 1); // return last element
 		this->_bodies->pop_back(); // remove it from vector
 		delete cb; // delete it
 	}

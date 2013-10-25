@@ -49,4 +49,10 @@ public:
 	// add current position to plot matrix (increments _currentStep afterwards)
 	// returns true if room, false if not
 	bool plotCurrentPosition(void);
+
+	// plot position matrix to file (after simulation)
+	void positionToFile()
+	{
+		this->plot.save(this->name + ".txt", raw_ascii);
+	}
 };

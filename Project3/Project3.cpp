@@ -145,13 +145,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	// dimensions
 	const int DIM = 2;
 
-	// number of time steps
-	const int N_STEPS = 1000;
+	// time steps
+	const int N_STEPS = 1000; // number of steps
+	const double DELTA_T = 1000; // time step length (s)
+	const int PLOT_EVERY = 1; // plot every ...th step
 
 	// flags
 	#define ADD_JUPITER	
 	#define ADD_ALL	
-	#define DEBUG
+	//#define DEBUG
 
 	const bool FIXED_SUN=false;
 
@@ -278,10 +280,39 @@ int _tmain(int argc, _TCHAR* argv[])
 #else // not DEBUG
 
 	// iterate and plot coordinates
-	for( int i = 0; i < N_STEPS i++ )
+	for( int i = 0; i < N_STEPS; i++ ) // for each time step
 	{
-		//
+		// calculate forces/accelerations based on postions
+		system.setForces();
+
+		for( int j = 0; j < system.n(); j++ ) // for each celestial body
+		{
+			CelestialBody* cb = system.body(j);
+
+			if( ! cb->fixed ) // a fixed celestial body will never move
+			{
+				// acc -> velocity (RK4)
+				vec k1 = cb->velocity + DELTA_T * cb->acc();
+				// k2 etc.
+
+				// velocity -> position (RK4)
+
+			}
+
+			if( i % PLOT_EVERY == 0 ) // we want to plot this step
+			{
+				cb->plotCurrentPosition();
+			}
+		}
 	}
+
+	// plot to file for each CB
+	for( int j = 0; j < system.n(); j++ )
+	{
+		system.body(j)->positionToFile(); // saved as "<name>.txt"
+	}
+
+	cout << "Finished plotting " << (N_STEPS / PLOT_EVERY) << " of " << N_STEPS << " steps!";
 
 #endif
 
