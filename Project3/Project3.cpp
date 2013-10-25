@@ -155,7 +155,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	#define ADD_ALL	
 	//#define DEBUG
 
-	const bool FIXED_SUN=false;
+	const bool FIXED_SUN = false;
 
 	// masses
 	const double M_SUN = 2e30;
