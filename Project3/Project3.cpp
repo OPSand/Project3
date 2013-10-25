@@ -143,7 +143,6 @@ void rk4_2D(int dim, int h, int time,SolarSystem* system, CelestialBody *current
 }
 #pragma endregion
 
-
 // the almighty main method!
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -152,25 +151,28 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 2;
 
 	// time steps
-	const int N_STEPS = 200000; // number of steps
-	const double DELTA_T = 1000; // time step length (s)
-	const int PLOT_EVERY = 200; // plot every ...th step
+	const int N_STEPS = 300 * 366; // number of steps
+	const double DELTA_T = 24 * 60 * 60; // time step length (s)
+	const int PLOT_EVERY = 1; // plot every ...th step
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
 	// compiler flags
-	//#define ADD_JUPITER	
-	//#define ADD_ALL	
+	#define ADD_JUPITER
+	#define ADD_ALL	
 	// #define DEBUG
 
-	// if set to false, the Sun will never move
-	const bool FIXED_SUN = true;
+	// if set to true, the Sun will never move
+	const bool FIXED_SUN = false;
+
+	// mass multiplier for Jupiter (1.0 = normal)
+	const double MEGA_JUPITER = 1000.0;
 #pragma endregion
 
 #pragma region Constants
 	// masses
 	const double M_SUN = 2e30;
 	const double M_EARTH = 6e24;
-	const double M_JUPITER = 1.9e27;
+	const double M_JUPITER = 1.9e27 * MEGA_JUPITER;
 	const double M_MARS = 6.6e23;
 	const double M_VENUS = 4.9e24;
 	const double M_SATURN = 5.5e26;
@@ -290,7 +292,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 #pragma endregion
 
-/*#else*/ // not DEBUG
+#else // not DEBUG
 #pragma region Iterate
 
 	// iterate and plot coordinates

@@ -1,6 +1,7 @@
 fidX = fopen('X.dat')
 fidY = fopen('Y.dat')
-X = fscanf(fidX,'%g',[10 1000]).'
-Y = fscanf(fidY, '%g', [10 1000]).'
+rows = 300 * 365
+X = fscanf(fidX,'%g',[10 rows]).'
+Y = fscanf(fidY, '%g', [10 rows]).'
 plot(X,Y)
 %legend('Solar system Simulation');
