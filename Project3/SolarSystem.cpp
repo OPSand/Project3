@@ -10,6 +10,16 @@ SolarSystem::SolarSystem(int dim, int nSteps, int nPlot)
 	this->_bodies = new vector<CelestialBody*>();
 }
 
+// copy constructor
+SolarSystem::SolarSystem(const SolarSystem& other)
+{
+	this->_dim = other._dim;
+	this->_nSteps = other._nSteps;
+	this->_nPlot = other._nPlot;
+
+	this->_bodies = other._bodies; // deep copy
+}
+
 // destructor
 SolarSystem::~SolarSystem(void)
 {
@@ -20,6 +30,63 @@ SolarSystem::~SolarSystem(void)
 		delete cb; // delete it
 	}
 	delete _bodies; // delete vector
+}
+
+// operator =
+SolarSystem SolarSystem::operator=(const SolarSystem& other)
+{
+	if( this != &other ) // protect against invalid self-assignment
+	{
+		this->_dim = other._dim;
+		this->_nSteps = other._nSteps;
+		this->_nPlot = other._nPlot;
+
+		this->_bodies = other._bodies; // deep copy
+	}
+
+	return *this; // to allow chaining of operators
+}
+
+SolarSystem SolarSystem::add(SolarSystem other, bool plus)
+{
+	// check that dimensions and number of celestial bodies
+	assert( this->n() == other.n() );
+	assert( this->dim() == other.dim() );
+
+	SolarSystem sum = *this; // deep copy
+	int n = this->n();
+
+	for( int i = 0; i < n; i++ )
+	{
+		CelestialBody* sumBody = sum.body(i); // I just need sumBody... not just anyBody...
+		CelestialBody* otherBody = other.body(i);
+
+		// add/subtract velocities and positions
+		if( plus ) // +
+		{
+			sumBody->velocity += otherBody->velocity;
+			sumBody->position += otherBody->position;
+		}
+		else // -
+		{
+			sumBody->velocity -= otherBody->velocity;
+			sumBody->position -= otherBody->position;
+		}
+	}
+
+	return sum;
+}
+
+// operator +
+SolarSystem SolarSystem::operator+(SolarSystem other)
+{
+	return this->add(other, true);
+}
+
+// operator +
+SolarSystem SolarSystem::operator-(SolarSystem other)
+{
+	return this->add(other, false);
 }
 
 // set force vectors on all elements

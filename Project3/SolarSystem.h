@@ -12,10 +12,15 @@ protected:
 	int _nSteps;
 	int _nPlot;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
+	SolarSystem add(SolarSystem other, bool plus);
 
 public:
 	SolarSystem(int dim, int nSteps, int nPlot);
+	SolarSystem(const SolarSystem& other);
 	~SolarSystem(void);
+	SolarSystem operator =(const SolarSystem& other); 
+	SolarSystem operator +(SolarSystem other);
+	SolarSystem operator -(SolarSystem other);
 	void setForces(void);
 
 	// return dimension of system
