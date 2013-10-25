@@ -150,11 +150,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double DELTA_T = 1000; // time step length (s)
 	const int PLOT_EVERY = 1; // plot every ...th step
 
-	// flags
+	// compiler flags
 	#define ADD_JUPITER	
 	#define ADD_ALL	
 	//#define DEBUG
 
+	// if set to false, the Sun will never move
 	const bool FIXED_SUN = false;
 
 	// masses
@@ -291,12 +292,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			if( ! cb->fixed ) // a fixed celestial body will never move
 			{
-				// acc -> velocity (RK4)
-				vec k1 = cb->velocity + DELTA_T * cb->acc();
-				// k2 etc.
+				// acc -> velocity (Euler-Cromer, for testing only)
+				cb->velocity += DELTA_T * cb->acc();
 
-				// velocity -> position (RK4)
-
+				// velocity -> position (Euler-Cromer, for testing only)
+				cb->position += DELTA_T * cb->velocity;
 			}
 
 			if( i % PLOT_EVERY == 0 ) // we want to plot this step
