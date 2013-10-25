@@ -52,21 +52,27 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 #pragma endregion
 
 #pragma region Solver
-vec derivative2D (vec& posVel, CelestialBody* celestialBody, SolarSystem* system)
+
+
+vec derivative2D (const vec& posVel, CelestialBody* celestialBody, SolarSystem* system)
 {
 	vec derivatives = vec(4);// (0): x | (1): y | (2): v_x | (3): v_y
+	vec dist = vec(2);
+	dist.zeros();
 	derivatives.zeros();
 #pragma region Recalculating the forces
 	int n = system->n();
 	for (int i= 0; i< n; i++)
 	{
 		if (system->body(i)->name == (*celestialBody).name);
-		else // We update the velocity
+		else 
 		{
-			double dist = (*celestialBody).dist(system->body(i));
+			dist(0) = (system->body(i))->position(0) -posVel(0); // We re-evaluate the new r
+			dist(1) = (system->body(i))->position(1) - posVel(1);
 			vec r = (*celestialBody).position_diff(system->body(i)); // gives the force the proper direction ... 
-			derivatives(2) += (cG * (*celestialBody).mass * system->body(i)->mass / pow(dist, 3.0)) * r(0)*posVel(0); // Newton's law of gravity on x
-			derivatives(3) += (cG * (*celestialBody).mass * system->body(i)->mass / pow(dist, 3.0)) * r(0)*posVel(1); // Newton's law of gravity on y
+			// We update the velocity
+			derivatives(2) += (cG * (*celestialBody).mass * system->body(i)->mass / pow(dist(0), 3.0)) * r(0)*posVel(0); // Newton's law of gravity on x
+			derivatives(3) += (cG * (*celestialBody).mass * system->body(i)->mass / pow(dist(1), 3.0)) * r(0)*posVel(1); // Newton's law of gravity on y
 		}
 	}
 #pragma endregion
@@ -93,7 +99,6 @@ void rk4_2D(int dim, int h, int time,SolarSystem* system, CelestialBody *current
 	vec k4 = vec(nbEq);
 	double halfH = 0.5*h;// We are computing the RG4 with half steps.
 	vec f_n = vec(nbEq);
-	vec g_n = (*currentCelestialBody).velocity;
 	for (int i= 0 ; i< dim; i++)
 	{
 		f_n(i) = (*currentCelestialBody).position(i); // (0): position x | (1): position y
@@ -127,16 +132,18 @@ void rk4_2D(int dim, int h, int time,SolarSystem* system, CelestialBody *current
 		f_np1(i) = (*currentCelestialBody).position(i) + (double)(1/6)*h*(k1(i) + k2(i) + k3(i) + k4(i));
 		f_np1(dim - 1 + i) = (*currentCelestialBody).velocity(i) + double(1/6)*h*(k1(dim - 1 + i) + k2(dim - 1 + i) + k3(dim - 1 + i) + k4(dim - 1 + i));
 	}
-	//int ini_posi = (*currentCelestialBody).position(0);
-	//int trucc = f_np1(0);
+	double ini_posi = (*currentCelestialBody).position(0); // XXX : To be removed
+	printf("%f",ini_posi); // XXX : To be removed
 	
 	for(int i=0; i< dim; i++)
 	{
-		(*currentCelestialBody).position(i) = f_np1(i);
+		(*currentCelestialBody).position(i) = f_np1(i); 
 		(*currentCelestialBody).velocity(i) = f_np1(dim - 1 + i);
 	}
 
-	//int fini_posi = (*currentCelestialBody).position(0);
+	double fini_posi = (*currentCelestialBody).position(0); // XXX : To be removed
+	printf("%f:", fini_posi);// XXX : To be removed
+
 	//system.setForces();
 	
 	return;
@@ -337,12 +344,13 @@ int _tmain(int argc, _TCHAR* argv[])
 #pragma endregion
 
 #endif
+	
 	CelestialBody* Earth = system.body(1);
 	int n = system.n();
 	int t= 0;
 	while (t < N_STEPS)
 	{
-		rk4_2D(2,2,N_STEPS,&system,Earth);
+		rk4_2D(2,DELTA_T,N_STEPS,&system,Earth);
 		printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
 		t+=DELTA_T;
 	}
