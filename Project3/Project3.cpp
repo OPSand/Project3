@@ -167,7 +167,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool ADD_JUPITER = true;
 	const bool ADD_ALL = true; // include the other 7 planets
 	const bool DEBUG = false; // use for debugging only
-	const bool USE_EULER = true; // if true, use Runge-Kutta
+	const bool USE_EULER = false; // if true, use Runge-Kutta
 
 	// if set to true, the Sun will never move
 	const bool FIXED_SUN = false;
@@ -332,7 +332,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else // use Runge-Kutta
 		{
-			//const double HALF_STEP = 0.5 * STEP;
+			SolarSystem copy = system;
+
+			const double HALF_STEP = 0.5 * STEP;
 
 			/* CelestialBody k1 = *cb; // make a copy
 			k1.velocity += STEP * k1.acc();

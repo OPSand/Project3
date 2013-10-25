@@ -19,7 +19,13 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 
 	// deep copy
 	this->_bodies = new vector<CelestialBody*>();
-	*this->_bodies = *other._bodies;
+	vector<CelestialBody*> ob = *(other._bodies); // avoid const
+	int n = ob.size();
+	for( int i = 0; i < n; i++ )
+	{
+		CelestialBody* cb = new CelestialBody(*(ob.at(i))); // copy
+		this->add(cb);
+	}
 }
 
 // destructor
@@ -45,7 +51,13 @@ SolarSystem SolarSystem::operator=(const SolarSystem& other)
 
 		// deep copy
 		this->_bodies = new vector<CelestialBody*>();
-		*this->_bodies = *other._bodies;
+		vector<CelestialBody*> ob = *(other._bodies); // avoid const
+		int n = ob.size();
+		for( int i = 0; i < n; i++ )
+		{
+			CelestialBody* cb = new CelestialBody(*(ob.at(i))); // copy
+			this->add(cb);
+		}
 	}
 
 	return *this; // to allow chaining of operators
