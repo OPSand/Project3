@@ -50,6 +50,96 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 	cb->velocity = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
 }
 
+
+vec derivative2D (double t, vec& posVel, CelestialBody celestialBody, SolarSystem system)
+{
+	// Two solutions to match the existing code. 
+	vec derivatives = vec(4);
+#pragma region Recalculating the forces
+	int n = system.n();
+	for (int i= 0; i< n; i++)
+	{
+		if (system.body(i)->name == celestialBody.name);
+		else
+		{
+			double dist = celestialBody.dist(system.body(i));
+			vec r = celestialBody.position_diff(system.body(i)); // gives the force the proper direction ... Pourquoi un vecteur ?!!
+			derivatives(2) += (cG * celestialBody.mass * system.body(i)->mass / pow(dist, 3.0)) * r(0)*posVel(0); // Newton's law of gravity on x
+			derivatives(3) += (cG * celestialBody.mass * system.body(i)->mass / pow(dist, 3.0)) * r(0)*posVel(1); // Newton's law of gravity on y
+		}
+	}
+#pragma endregion
+
+#pragma region Resetting the Forces
+	/*
+	derivatives[1] = celestialBody.force(t)/celestialBody.mass;*/
+#pragma endregion
+	
+	derivatives[0] = posVel(2); // Derivative of the position in x
+	derivatives[1] = posVel(3); // Derivative of the position in y
+	return derivatives;
+}
+
+
+// So this is our Runge Kutta 4 algorithm in 2D for now. 
+void rk4_2D(int dim, int h, int time,SolarSystem system, CelestialBody currentCelestialBody)
+{
+#pragma region About the first part
+	//So to begin with, we'll only study a system with two points: the sun and the earth.
+	// The method to do so is the same as the method to compute this with a lot more elements
+	// The only thing changing is the flag set in the beginning of the project3.cpp main
+#pragma endregion
+	int nbEq = dim * 2; // We have to compute the velocity + position for all our dim.
+	vec positions_np1 = vec(2); // on suppose pour l'instant qu'on process en 2D. A arranger après.
+	vec f_np1 = vec(nbEq);
+	vec k1 = vec(nbEq);
+	vec k2 = vec(nbEq);
+	vec k3 = vec(nbEq);
+	vec k4 = vec(nbEq);
+	double halfH = 0.5*h;// We are computing the RG4 with half steps.
+	vec f_n = vec(nbEq);
+	vec g_n = currentCelestialBody.velocity;
+	for (int i= 0 ; i< dim; i++)
+	{
+		f_n(i) = currentCelestialBody.position(i);
+		f_n(dim - 1 + i) = currentCelestialBody.velocity(i);
+	}
+#pragma region ki Computations
+	k1 = derivative2D(time,f_n,currentCelestialBody,system); // k1 
+	for (int i=0; i < dim; i++)
+	{
+		f_n(i) = currentCelestialBody.position(i) + halfH*k1(i);
+		f_n(dim - 1 + i) = currentCelestialBody.velocity(i) + halfH*k1(dim - 1 + i);
+	}
+	k2 = derivative2D(time + halfH,f_n,currentCelestialBody,system ); // k2
+	for (int i=0; i < dim; i++)
+	{
+		f_n(i) = currentCelestialBody.position(i) + halfH*k2(i);
+		f_n(dim - 1 + i) = currentCelestialBody.velocity(i) + halfH*k2(dim - 1 + i);
+	}
+	k3 = derivative2D(time + halfH,f_n,currentCelestialBody,system); // k3
+	for (int i=0; i < dim; i++)
+	{
+		f_n(i) = currentCelestialBody.position(i) + halfH*k3(i);
+		f_n(dim - 1 + i) = currentCelestialBody.velocity(i) + halfH*k3(dim - 1 + i);
+	}
+	k4 = derivative2D(time + halfH,f_n,currentCelestialBody,system); // k4
+#pragma endregion
+
+	// And finally, we update the position vector/
+	for (int i=0; i<dim;i++)
+	{
+		f_np1(i) = currentCelestialBody.position(i) + (double)(1/6)*h*(k1(i) + k2(i) + k3(i) + k4(i));
+		f_np1(dim - 1 + i) = currentCelestialBody.velocity(i) + double(1/6)*h*(k1(dim - 1 + i) + k2(dim - 1 + i) + k3(dim - 1 + i) + k4(dim - 1 + i));
+	}
+	// And lastly, we have to update our r in our global struct. Working with a pointer just to be sure that our new params are updated
+	system.setForces();
+	
+	return;
+}
+
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	// dimensions
@@ -196,77 +286,3 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0; // exit
 }
 
-
-// We just compute the derivatives here, and gives it back to the "rkSolver"
-vec derivative (double t, double h, vec& position, vec& velocity, CelestialBody celestialBody, SolarSystem* system)
-{
-	// Two solutions to match the existing code. 
-	vec derivatives = vec(2);
-#pragma region Recalculating the forces
-	int n = system->n();
-	for (int i= 0; i< n; i++)
-	{
-		if (system->body(i)->name == celestialBody.name);
-		else
-		{
-			double dist = celestialBody.dist(system->body(i));
-			vec r = celestialBody.position_diff(system->body(i)); // gives the force the proper direction ... Pourquoi un vecteur ?!!
-			derivatives(1) += (cG * celestialBody.mass * system->body(i)->mass / pow(dist, 3.0)) * r(0)*position(0); // Newton's law of gravity
-		}
-	}
-#pragma endregion
-
-#pragma region Resetting the Forces
-	/*
-	derivatives[1] = celestialBody.force(t)/celestialBody.mass;*/
-#pragma endregion
-	
-	derivatives[0] = velocity(t); // Derivative of the position
-	return derivatives;
-}
-
-
-// So this is our Runge Kutta 4 algorithm in 2D for now. 
-void rk4_2D(int nbSteps, double h, int time, double stepTime, SolarSystem* system, CelestialBody currentCelestialBody)
-{
-#pragma region About the first part
-	//So to begin with, we'll only study a system with two points: the sun and the earth.
-	// The method to do so is the same as the method to compute this with a lot more elements
-	// The only thing changing is the flag set in the beginning of the project3.cpp main
-#pragma endregion
-	vec positions_np1 = vec(2); // on suppose pour l'instant qu'on process en 2D. A arranger après.
-	vec f_np1 = vec(2);
-	vec k1 = vec(2);
-	vec k2 = vec(2);
-	vec k3 = vec(2);
-	vec k4 = vec(2);
-	double halfH = 0.5*h;// We are computing the RG4 with half steps.
-	vec f_n = currentCelestialBody.position;
-	vec g_n = currentCelestialBody.velocity;
-	double halfStepTime = stepTime/2;
-
-#pragma region k Computations
-	k1 = derivative(time,nbSteps,currentCelestialBody.position,currentCelestialBody.velocity,currentCelestialBody,system); // k1 computation
-	for (int i=0; i < nbSteps; i++)
-		f_n(i) = currentCelestialBody.position(i) + halfH*k1(i);
-	k2 = derivative(time + halfStepTime,nbSteps + halfH /*+halfH*k1*/,f_n,currentCelestialBody.velocity, currentCelestialBody,system ); // k2 computation
-	for (int i=0; i < nbSteps; i++)
-		f_n(i) = currentCelestialBody.position(i) + halfH*k2(i);
-	k3 = derivative(time + halfStepTime,nbSteps + halfH /*+halfH*k2*/,f_n,currentCelestialBody.velocity,currentCelestialBody,system); // k3 computation
-	for (int i=0; i < nbSteps; i++)
-		f_n(i) = currentCelestialBody.position(i) + halfH*k3(i);
-	k4 = derivative(time + halfStepTime,nbSteps + halfH /*+halfH*k3*/,f_n,currentCelestialBody.velocity,currentCelestialBody,system); // k4 computation
-#pragma endregion
-	// Then we have to set r. So yep, the new forces have to be calculated !!
-	// Après chaque itération, ou après chhaque tour ? Chaque tour: sinon, on a des
-	// Trucs relativement randoms!
-	// And finally, we update the position vector/
-	for (int i=0; i<nbSteps;i++)
-		f_np1(i) = currentCelestialBody.position(i) + (double)(1/6)*h*(k1(i) + k2(i) + k3(i) + k4(i));
-	currentCelestialBody.position = f_n;
-	currentCelestialBody.velocity = g_n;
-	// And lastly, we have to update our r in our global struct. Working with a pointer just to be sure that our new params are updated
-	(*system).setForces();
-	
-	return;
-}
