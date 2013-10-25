@@ -12,6 +12,7 @@
 
 #include "armadillo"
 #include <vector>
+#include <assert.h>
 
 #include "constants.h"
 

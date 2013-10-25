@@ -26,7 +26,7 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	this->force.fill(0);
 
 	// plot matrix
-	this->plot = mat(system->nSteps(), this->_dim);
+	this->plot = mat(system->nPlot(), this->_dim);
 	plot.fill(0.0);
 
 	// add to system

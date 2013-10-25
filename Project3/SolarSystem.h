@@ -10,10 +10,11 @@ class SolarSystem
 protected:
 	int _dim;
 	int _nSteps;
+	int _nPlot;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 
 public:
-	SolarSystem(int dim, int nSteps);
+	SolarSystem(int dim, int nSteps, int nPlot);
 	~SolarSystem(void);
 	void setForces(void);
 
@@ -27,6 +28,12 @@ public:
 	int nSteps(void)
 	{
 		return _nSteps;
+	}
+
+	// return number of steps to plot
+	int nPlot(void)
+	{
+		return _nPlot;
 	}
 
 	// return number of celestial bodies in system
@@ -43,4 +50,7 @@ public:
 
 	// return total momentum of system
 	vec totalMomentum(void);
+
+	// plot dimension # i for all elements to "<path>.txt" (rows: time - cols: elements)
+	void plotDim(int i, const string& path);
 };

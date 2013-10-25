@@ -2,10 +2,11 @@
 #include "SolarSystem.h"
 
 // constructor
-SolarSystem::SolarSystem(int dim, int nSteps)
+SolarSystem::SolarSystem(int dim, int nSteps, int nPlot)
 {
 	this->_dim = dim;
 	this->_nSteps = nSteps;
+	this->_nPlot = nPlot;
 	this->_bodies = new vector<CelestialBody*>();
 }
 
@@ -83,4 +84,19 @@ vec SolarSystem::totalMomentum()
 	}
 
 	return mom;
+}
+
+// plot dimension # i for all elements to "<path>.txt" (rows: time - cols: elements)
+void SolarSystem::plotDim(int i, const string& path)
+{
+	assert(i < this->dim());
+
+	mat plot(this->nPlot(), this->n());
+	for( int j = 0; j < this->n(); j++ ) // loop through elements
+	{
+		CelestialBody* cb = this->body(j);
+		plot.col(j) = cb->plot.col(i);
+	}
+
+	plot.save(path, raw_ascii); // save to file
 }

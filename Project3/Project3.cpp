@@ -5,7 +5,6 @@
 #include "SolarSystem.h"
 #include "CelestialBody.h"
 #include <random>
-#include <assert.h>
 
 #pragma region Initialization helper methods
 // converts polar coordinates to cartesian coordinates
@@ -151,6 +150,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N_STEPS = 200000; // number of steps
 	const double DELTA_T = 1000; // time step length (s)
 	const int PLOT_EVERY = 200; // plot every ...th step
+	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
 	// compiler flags
 	#define ADD_JUPITER	
@@ -217,7 +217,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	eng.seed(randomSeed);
 
 	// initialize solar system
-	SolarSystem system = SolarSystem(DIM, N_STEPS);
+	SolarSystem system = SolarSystem(DIM, N_STEPS, N_PLOT);
 	
 	CelestialBody* sun = new CelestialBody("Sun", M_SUN, &system, FIXED_SUN);
 	
@@ -316,13 +316,17 @@ int _tmain(int argc, _TCHAR* argv[])
 #pragma endregion
 
 #pragma region Plot
-	// plot to file for each CB
+	/* plot to file for each CB
 	for( int j = 0; j < system.n(); j++ )
 	{
 		system.body(j)->positionToFile(); // saved as "<name>.txt"
-	}
+	} */
 
-	cout << "Finished plotting " << (N_STEPS / PLOT_EVERY) << " of " << N_STEPS << " steps!";
+	// plot X and Y coordinates for the entire system as matrices
+	system.plotDim(0, "X.txt");
+	system.plotDim(1, "Y.txt");
+
+	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
 #pragma endregion
 
 #endif
