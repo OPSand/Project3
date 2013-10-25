@@ -5,13 +5,19 @@ SolarSystem::SolarSystem(int dim, int nSteps)
 {
 	this->_dim = dim;
 	this->_nSteps = nSteps;
-	this->_bodies = vector<CelestialBody*>();
+	this->_bodies = new vector<CelestialBody*>();
 }
 
 
 SolarSystem::~SolarSystem(void)
 {
-	// no uses of new
+	while( this->n() > 0 ) // counter will be updated automatically
+	{
+		CelestialBody* cb = this->body(this->n()); // return last element
+		this->_bodies->pop_back(); // remove it from vector
+		delete cb; // delete it
+	}
+	delete _bodies; // delete vector
 }
 
 
@@ -51,13 +57,13 @@ void SolarSystem::setForces(void)
 // return a celestial body at the index i
 CelestialBody* SolarSystem::body(int i)
 {
-	return _bodies.at(i);
+	return _bodies->at(i);
 }
 
 // add a new celestial body to solar system
 void SolarSystem::add(CelestialBody* cb)
 {
-	this->_bodies.push_back(cb); // append to end of vector
+	this->_bodies->push_back(cb); // append to end of vector
 }
 
 // return total momentum of system
@@ -68,7 +74,7 @@ vec SolarSystem::totalMomentum()
 
 	for(int i = 0; i < this->n(); i++)
 	{
-		CelestialBody* cb_i = this->_bodies[i];
+		CelestialBody* cb_i = this->body(i);
 		if( ! cb_i->fixed ) // fixed bodies never move
 		{
 			mom += (cb_i->mass * cb_i->velocity); // add p = m*v (non-relativistic)

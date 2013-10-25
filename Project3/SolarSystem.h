@@ -10,7 +10,7 @@ class SolarSystem
 protected:
 	int _dim;
 	int _nSteps;
-	vector<CelestialBody*> _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
+	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 
 public:
 	SolarSystem(int dim, int nSteps);
@@ -32,7 +32,7 @@ public:
 	// return number of celestial bodies in system
 	int n(void)
 	{
-		return _bodies.size();
+		return _bodies->size();
 	}
 
 	// return a celestial body at the index i

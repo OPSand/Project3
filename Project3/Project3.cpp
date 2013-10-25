@@ -210,54 +210,47 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialize solar system
 	SolarSystem system = SolarSystem(DIM, N_STEPS);
 	
-	CelestialBody sun = CelestialBody("Sun", M_SUN, &system, FIXED_SUN);
+	CelestialBody* sun = new CelestialBody("Sun", M_SUN, &system, FIXED_SUN);
 	
-	CelestialBody earth = CelestialBody("Earth", M_EARTH, &system);
-	initial2D(&earth, D_EARTH, V_EARTH, &eng);
+	CelestialBody* earth = new CelestialBody("Earth", M_EARTH, &system);
+	initial2D(earth, D_EARTH, V_EARTH, &eng);
 
 #ifdef ADD_JUPITER
-		CelestialBody jupiter = CelestialBody("Jupiter", M_JUPITER, &system);
-		initial2D(&jupiter, D_JUPITER, V_JUPITER, &eng);
+		CelestialBody* jupiter = new CelestialBody("Jupiter", M_JUPITER, &system);
+		initial2D(jupiter, D_JUPITER, V_JUPITER, &eng);
 #endif
 
 #ifdef ADD_ALL
-		CelestialBody mercury = CelestialBody("Mercury", M_MERCURY, &system);
-		initial2D(&mercury, D_MERCURY, V_MERCURY, &eng);
+		CelestialBody* mercury = new CelestialBody("Mercury", M_MERCURY, &system);
+		initial2D(mercury, D_MERCURY, V_MERCURY, &eng);
 
-		CelestialBody venus = CelestialBody("Venus", M_VENUS, &system);
-		initial2D(&venus, D_VENUS, V_VENUS, &eng);
+		CelestialBody* venus = new CelestialBody("Venus", M_VENUS, &system);
+		initial2D(venus, D_VENUS, V_VENUS, &eng);
 		
-		CelestialBody mars = CelestialBody("Mars", M_MARS, &system);
-		initial2D(&mars, D_MARS, V_MARS, &eng);
+		CelestialBody* mars = new CelestialBody("Mars", M_MARS, &system);
+		initial2D(mars, D_MARS, V_MARS, &eng);
 
-		CelestialBody saturn = CelestialBody("Saturn", M_SATURN, &system);
-		initial2D(&saturn, D_SATURN, V_SATURN, &eng);
+		CelestialBody* saturn = new CelestialBody("Saturn", M_SATURN, &system);
+		initial2D(saturn, D_SATURN, V_SATURN, &eng);
 
-		//if( true ) // reproduce bug by change of scope
-		//{
-			CelestialBody uranus = CelestialBody("Uranus", M_URANUS, &system);
-			initial2D(&uranus, D_URANUS, V_URANUS, &eng);
+		CelestialBody* uranus = new CelestialBody("Uranus", M_URANUS, &system);
+		initial2D(uranus, D_URANUS, V_URANUS, &eng);
 
-			CelestialBody neptune = CelestialBody("Neptune", M_NEPTUNE, &system);
-			initial2D(&neptune, D_NEPTUNE, V_NEPTUNE, &eng);
+		CelestialBody* neptune = new CelestialBody("Neptune", M_NEPTUNE, &system);
+		initial2D(neptune, D_NEPTUNE, V_NEPTUNE, &eng);
 
-			CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
-			initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
-		//}
+		CelestialBody* pluto = new CelestialBody("Pluto", M_PLUTO, &system);
+		initial2D(pluto, D_PLUTO, V_PLUTO, &eng);
+
 #endif
 
 	if( ! FIXED_SUN )
 	{
-		sun.velocity = (-system.totalMomentum() / sun.mass); // v = p/m;
+		sun->velocity = (-system.totalMomentum() / sun->mass); // v = p/m;
 		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
 	}
 
 #ifdef DEBUG
-	for( int i = 0; i < system.n(); i++ )
-	{
-		cout << i << ": " << system.body(i)->name << endl; // output planet names
-	}
-
 	system.setForces();
 	for( int i = 0; i < system.n(); i++ )
 	{
@@ -269,17 +262,28 @@ int _tmain(int argc, _TCHAR* argv[])
 		vec v(DIM);
 		v(0) = i;
 		v(1) = 2*i;
-		jupiter.position = v;
-		if( ! jupiter.plotCurrentPosition() )
+		jupiter->position = v;
+		if( ! jupiter->plotCurrentPosition() )
 		{
 			cout << "plot matrix full! :S" << endl;
 		}
 	}
-	cout << jupiter.plot;
+	cout << jupiter->plot;
+
+	for( int i = 0; i < system.n(); i++ )
+	{
+		cout << i << ": " << system.body(i)->name << endl; // output planet names
+	}
+
+#else // not DEBUG
+
+	// iterate and plot coordinates
+	for( int i = 0; i < N_STEPS i++ )
+	{
+		//
+	}
 
 #endif
-
-	// TODO: iterate and plot coordinates etc.
 
 	getchar(); // pause
 
