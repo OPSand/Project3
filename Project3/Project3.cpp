@@ -59,9 +59,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N_STEPS = 1000;
 
 	// flags
-#define ADD_JUPITER	
-#define ADD_ALL	
-#define DEBUG
+	#define ADD_JUPITER	
+	#define ADD_ALL	
+	#define DEBUG
+
 	const bool FIXED_SUN=false;
 
 	// masses
@@ -142,14 +143,17 @@ int _tmain(int argc, _TCHAR* argv[])
 		CelestialBody saturn = CelestialBody("Saturn", M_SATURN, &system);
 		initial2D(&saturn, D_SATURN, V_SATURN, &eng);
 
-		CelestialBody uranus = CelestialBody("Uranus", M_URANUS, &system);
-		initial2D(&uranus, D_URANUS, V_URANUS, &eng);
+		//if( true ) // reproduce bug by change of scope
+		//{
+			CelestialBody uranus = CelestialBody("Uranus", M_URANUS, &system);
+			initial2D(&uranus, D_URANUS, V_URANUS, &eng);
 
-		CelestialBody neptune = CelestialBody("Neptune", M_NEPTUNE, &system);
-		initial2D(&neptune, D_NEPTUNE, V_NEPTUNE, &eng);
+			CelestialBody neptune = CelestialBody("Neptune", M_NEPTUNE, &system);
+			initial2D(&neptune, D_NEPTUNE, V_NEPTUNE, &eng);
 
-		CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
-		initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
+			CelestialBody pluto = CelestialBody("Pluto", M_PLUTO, &system);
+			initial2D(&pluto, D_PLUTO, V_PLUTO, &eng);
+		//}
 #endif
 
 	if( ! FIXED_SUN )
@@ -159,6 +163,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 #ifdef DEBUG
+	for( int i = 0; i < system.n(); i++ )
+	{
+		cout << i << ": " << system.body(i)->name << endl; // output planet names
+	}
+
 	system.setForces();
 	for( int i = 0; i < system.n(); i++ )
 	{
@@ -177,6 +186,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 	cout << jupiter.plot;
+
 #endif
 
 	// TODO: iterate and plot coordinates etc.
