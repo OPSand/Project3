@@ -53,6 +53,6 @@ public:
 	// plot position matrix to file (after simulation)
 	void positionToFile()
 	{
-		this->plot.save(this->name + ".txt", raw_ascii);
+		this->plot.save(this->name + ".dat", raw_ascii);
 	}
 };

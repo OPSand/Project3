@@ -319,12 +319,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	/* plot to file for each CB
 	for( int j = 0; j < system.n(); j++ )
 	{
-		system.body(j)->positionToFile(); // saved as "<name>.txt"
+		system.body(j)->positionToFile(); // saved as "<name>.dat"
 	} */
 
 	// plot X and Y coordinates for the entire system as matrices
-	system.plotDim(0, "X.txt");
-	system.plotDim(1, "Y.txt");
+	system.plotDim(0, "X.dat");
+	system.plotDim(1, "Y.dat");
 
 	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
 #pragma endregion

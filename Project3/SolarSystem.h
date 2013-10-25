@@ -51,6 +51,6 @@ public:
 	// return total momentum of system
 	vec totalMomentum(void);
 
-	// plot dimension # i for all elements to "<path>.txt" (rows: time - cols: elements)
+	// plot dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
 	void plotDim(int i, const string& path);
 };

@@ -86,7 +86,7 @@ vec SolarSystem::totalMomentum()
 	return mom;
 }
 
-// plot dimension # i for all elements to "<path>.txt" (rows: time - cols: elements)
+// plot dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
 void SolarSystem::plotDim(int i, const string& path)
 {
 	assert(i < this->dim());
