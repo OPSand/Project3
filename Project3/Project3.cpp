@@ -165,7 +165,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool FIXED_SUN = false;
 
 	// mass multiplier for Jupiter (1.0 = normal)
-	const double MEGA_JUPITER = 1000.0;
+	const double MEGA_JUPITER = 1.0;
 #pragma endregion
 
 #pragma region Constants
