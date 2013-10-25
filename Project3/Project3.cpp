@@ -150,7 +150,7 @@ void rk4_2D(int dim, int h, int time,SolarSystem* system, CelestialBody *current
 }
 #pragma endregion
 
-// the almighty main method!
+// behold the almighty main method!
 int _tmain(int argc, _TCHAR* argv[])
 {
 #pragma region Flags and Settings
@@ -164,9 +164,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
 	// compiler flags
-	#define ADD_JUPITER
-	#define ADD_ALL	
-	#define DEBUG
+	const bool ADD_JUPITER = true;
+	const bool ADD_ALL = true; // include the other 7 planets
+	const bool DEBUG = false; // use for debugging only
+	const bool USE_EULER = false; // if true, use Runge-Kutta
 
 	// if set to true, the Sun will never move
 	const bool FIXED_SUN = false;
@@ -238,12 +239,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	CelestialBody* earth = new CelestialBody("Earth", M_EARTH, &system);
 	initial2D(earth, D_EARTH, V_EARTH, &eng);
 
-#ifdef ADD_JUPITER
+	if( ADD_JUPITER ) 
+	{
 		CelestialBody* jupiter = new CelestialBody("Jupiter", M_JUPITER, &system);
 		initial2D(jupiter, D_JUPITER, V_JUPITER, &eng);
-#endif
+	}
 
-#ifdef ADD_ALL
+	if( ADD_ALL )
+	{
 		CelestialBody* mercury = new CelestialBody("Mercury", M_MERCURY, &system);
 		initial2D(mercury, D_MERCURY, V_MERCURY, &eng);
 
@@ -264,43 +267,45 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		CelestialBody* pluto = new CelestialBody("Pluto", M_PLUTO, &system);
 		initial2D(pluto, D_PLUTO, V_PLUTO, &eng);
-#endif
+	}
 
 	if( ! FIXED_SUN )
 	{
 		sun->velocity = (-system.totalMomentum() / sun->mass); // v = p/m;
-		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
+		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is actually 0
 	}
 #pragma endregion
 
-#ifdef DEBUG
-	system.setForces();
-	for( int i = 0; i < system.n(); i++ )
+#pragma region Debugging code (Here be dragons!)
+	if( DEBUG )
 	{
-		cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl << "Pos:" << endl << system.body(i)->position << endl << "Vel:" << endl << system.body(i)->velocity << endl;
-	}
-
-	/* 
-	for( int i = 0; i < N_STEPS; i++ )
-	{
-		vec v(DIM);
-		v(0) = i;
-		v(1) = 2*i;
-		jupiter->position = v;
-		if( ! jupiter->plotCurrentPosition() )
+		system.setForces();
+		for( int i = 0; i < system.n(); i++ )
 		{
-			cout << "plot matrix full! :S" << endl;
+			cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl << "Pos:" << endl << system.body(i)->position << endl << "Vel:" << endl << system.body(i)->velocity << endl;
 		}
-	} 
-	cout << jupiter->plot; */
 
-	for( int i = 0; i < system.n(); i++ )
-	{
-		cout << i << ": " << system.body(i)->name << endl; // output planet names
+		/* 
+		for( int i = 0; i < N_STEPS; i++ )
+		{
+			vec v(DIM);
+			v(0) = i;
+			v(1) = 2*i;
+			jupiter->position = v;
+			if( ! jupiter->plotCurrentPosition() )
+			{
+				cout << "plot matrix full! :S" << endl;
+			}
+		} 
+		cout << jupiter->plot; */
+
+		for( int i = 0; i < system.n(); i++ )
+		{
+			cout << i << ": " << system.body(i)->name << endl; // output planet names
+		}
 	}
 #pragma endregion
 
-#else // not DEBUG
 #pragma region Iterate
 
 	// iterate and plot coordinates
@@ -315,11 +320,18 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			if( ! cb->fixed ) // a fixed celestial body will never move
 			{
-				// acc -> velocity (Euler-Cromer, for testing only)
-				cb->velocity += DELTA_T * cb->acc();
+				if( USE_EULER )
+				{
+					// acc -> velocity (Euler-Cromer, for testing only)
+					cb->velocity += DELTA_T * cb->acc();
 
-				// velocity -> position (Euler-Cromer, for testing only)
-				cb->position += DELTA_T * cb->velocity;
+					// velocity -> position (Euler-Cromer, for testing only)
+					cb->position += DELTA_T * cb->velocity;
+				}
+				else // use Runge-Kutta
+				{
+					// do stuffs
+				}
 			}
 
 			if( i % PLOT_EVERY == 0 ) // we want to plot this step
@@ -343,19 +355,21 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
 #pragma endregion
-#endif
 	
-#ifdef DEBUG
-	CelestialBody* Earth = system.body(1);
-	int n = system.n();
-	int t= 0;
-	while (t < N_STEPS)
+#pragma region More debugging
+	if ( DEBUG )
 	{
-		rk4_2D(2,DELTA_T,N_STEPS,&system,Earth);
-		printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
-		t+=DELTA_T;
+		CelestialBody* Earth = system.body(1);
+		int n = system.n();
+		int t= 0;
+		while (t < N_STEPS)
+		{
+			rk4_2D(2,DELTA_T,N_STEPS,&system,Earth);
+			printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
+			t+=DELTA_T;
+		}
 	}
-#endif
+#pragma endregion
 
 	getchar(); // pause
 
