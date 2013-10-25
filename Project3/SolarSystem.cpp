@@ -17,7 +17,9 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 	this->_nSteps = other._nSteps;
 	this->_nPlot = other._nPlot;
 
-	this->_bodies = other._bodies; // deep copy
+	// deep copy
+	this->_bodies = new vector<CelestialBody*>();
+	*this->_bodies = *other._bodies;
 }
 
 // destructor
@@ -41,7 +43,9 @@ SolarSystem SolarSystem::operator=(const SolarSystem& other)
 		this->_nSteps = other._nSteps;
 		this->_nPlot = other._nPlot;
 
-		this->_bodies = other._bodies; // deep copy
+		// deep copy
+		this->_bodies = new vector<CelestialBody*>();
+		*this->_bodies = *other._bodies;
 	}
 
 	return *this; // to allow chaining of operators
@@ -58,7 +62,7 @@ SolarSystem SolarSystem::add(SolarSystem other, bool plus)
 
 	for( int i = 0; i < n; i++ )
 	{
-		CelestialBody* sumBody = sum.body(i); // I just need sumBody... not just anyBody...
+		CelestialBody* sumBody = sum.body(i); // HELP! I just need sumBody... HELP! not just anyBody...
 		CelestialBody* otherBody = other.body(i);
 
 		// add/subtract velocities and positions
@@ -83,10 +87,34 @@ SolarSystem SolarSystem::operator+(SolarSystem other)
 	return this->add(other, true);
 }
 
-// operator +
+// operator -
 SolarSystem SolarSystem::operator-(SolarSystem other)
 {
 	return this->add(other, false);
+}
+
+// operator *
+SolarSystem SolarSystem::operator *(double factor)
+{
+	SolarSystem product = *this; // deep copy
+	int n = this->n();
+
+	for( int i = 0; i < n; i++ )
+	{
+		CelestialBody* prodBody = product.body(i);
+
+		// multiply position and velocity with factor
+		prodBody->velocity *= factor;
+		prodBody->position *= factor;
+	}
+
+	return product;
+}
+
+// operator +=
+SolarSystem SolarSystem::operator +=(SolarSystem other)
+{
+	return (*this + other);
 }
 
 // set force vectors on all elements
@@ -153,7 +181,29 @@ vec SolarSystem::totalMomentum()
 	return mom;
 }
 
-// plot dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
+// plots all element positions if the condition is met
+// returns true if room, false if not
+bool SolarSystem::plotCurrentPositions(bool condition)
+{
+	bool success = true; // there was room, or the condition wasn't met
+
+	if( condition )
+	{
+		int n = this->n();
+
+		for( int i = 0; i < n; i++ )
+		{
+			if( ! this->body(i)->plotCurrentPosition() ) // plot this element
+			{
+				success = false; // it is sufficient that one element has no room
+			}
+		}
+	}
+
+	return success;
+}
+
+// save dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
 void SolarSystem::plotDim(int i, const string& path)
 {
 	assert(i < this->dim());

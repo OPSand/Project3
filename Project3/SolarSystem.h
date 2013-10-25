@@ -21,6 +21,8 @@ public:
 	SolarSystem operator =(const SolarSystem& other); 
 	SolarSystem operator +(SolarSystem other);
 	SolarSystem operator -(SolarSystem other);
+	SolarSystem operator *(double factor);
+	SolarSystem operator +=(SolarSystem other);
 	void setForces(void);
 
 	// return dimension of system
@@ -42,7 +44,7 @@ public:
 	}
 
 	// return number of celestial bodies in system
-	int n(void)
+	const int n(void)
 	{
 		return _bodies->size();
 	}
@@ -58,4 +60,8 @@ public:
 
 	// plot dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
 	void plotDim(int i, const string& path);
+
+	// plots all element positions if the condition is met
+	// returns true if room, false if not
+	bool plotCurrentPositions(bool condition);
 };

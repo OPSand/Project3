@@ -159,7 +159,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// time steps
 	const int N_STEPS = 300 * 366; // number of steps
-	const double DELTA_T = 24 * 60 * 60; // time step length (s)
+	const double STEP = 24 * 60 * 60; // time step length (s)
 	const int PLOT_EVERY = 1; // plot every ...th step
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
@@ -167,7 +167,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool ADD_JUPITER = true;
 	const bool ADD_ALL = true; // include the other 7 planets
 	const bool DEBUG = false; // use for debugging only
-	const bool USE_EULER = false; // if true, use Runge-Kutta
+	const bool USE_EULER = true; // if true, use Runge-Kutta
 
 	// if set to true, the Sun will never move
 	const bool FIXED_SUN = false;
@@ -311,34 +311,35 @@ int _tmain(int argc, _TCHAR* argv[])
 	// iterate and plot coordinates
 	for( int i = 0; i < N_STEPS; i++ ) // for each time step
 	{
-		// calculate forces/accelerations based on postions
-		system.setForces();
-
-		for( int j = 0; j < system.n(); j++ ) // for each celestial body
+		if( USE_EULER )
 		{
-			CelestialBody* cb = system.body(j);
+			// calculate forces/accelerations based on current postions
+			system.setForces();
 
-			if( ! cb->fixed ) // a fixed celestial body will never move
+			for( int j = 0; j < system.n(); j++ ) // for each celestial body
 			{
-				if( USE_EULER )
+				CelestialBody* cb = system.body(j);
+
+				if( ! cb->fixed ) // a fixed celestial body will never move
 				{
 					// acc -> velocity (Euler-Cromer, for testing only)
-					cb->velocity += DELTA_T * cb->acc();
+					cb->velocity += STEP * cb->acc();
 
 					// velocity -> position (Euler-Cromer, for testing only)
-					cb->position += DELTA_T * cb->velocity;
+					cb->position += STEP * cb->velocity;
 				}
-				else // use Runge-Kutta
-				{
-					// do stuffs
-				}
-			}
-
-			if( i % PLOT_EVERY == 0 ) // we want to plot this step
-			{
-				cb->plotCurrentPosition();
 			}
 		}
+		else // use Runge-Kutta
+		{
+			//const double HALF_STEP = 0.5 * STEP;
+
+			/* CelestialBody k1 = *cb; // make a copy
+			k1.velocity += STEP * k1.acc();
+			k1.position += STEP * k1.velocity; */
+		}
+
+		system.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
 	}
 #pragma endregion
 
@@ -364,9 +365,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		int t= 0;
 		while (t < N_STEPS)
 		{
-			rk4_2D(2,DELTA_T,N_STEPS,&system,Earth);
+			rk4_2D(2,STEP,N_STEPS,&system,Earth);
 			printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
-			t+=DELTA_T;
+			t+=STEP;
 		}
 	}
 #pragma endregion

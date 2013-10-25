@@ -33,22 +33,23 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	system->add(this);
 }
 
-/* copy constructor
+// copy constructor
 CelestialBody::CelestialBody(const CelestialBody &cb)
 {
-	this->name = cb.name;
+	this->name = cb.name; // unlikely to change
 	this->mass = cb.mass;
 	this->_dim = cb._dim;
 	this->_currentStep = cb._currentStep;
 
 	this->fixed = cb.fixed;
 
-	// Armadillo being Armadillo, these should be copied, not just passed by reference (we hope).
-	this->position = cb.position;
-	this->velocity = cb.velocity;
-	this->force = cb.force;
-	this->plot = cb.plot;
-} */
+	// These may be changed, so we copy them
+	this->position = *(new vec(cb.position));
+	this->velocity = *(new vec(cb.velocity));
+	this->force = *(new vec(cb.force));
+
+	// NOTE: we do not copy plot or system
+}
 
 // destructor
 CelestialBody::~CelestialBody(void)
@@ -56,26 +57,28 @@ CelestialBody::~CelestialBody(void)
 	// empty because we don't use new
 }
 
-/* operator =
+// operator =
 CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 {
 	if( this != &cb ) // protect against invalid self-assignment
 	{
-		this->name = cb.name;
+		this->name = cb.name; // unlikely to change
 		this->mass = cb.mass;
 		this->_dim = cb._dim;
 		this->_currentStep = cb._currentStep;
+
 		this->fixed = cb.fixed;
 
-		// Armadillo being Armadillo, these should be copied, not just passed by reference (we hope).
-		this->position = cb.position;
-		this->velocity = cb.velocity;
-		this->force = cb.force;
-		this->plot = cb.plot;
+		// These may be changed, so we copy them
+		this->position = *(new vec(cb.position));
+		this->velocity = *(new vec(cb.velocity));
+		this->force = *(new vec(cb.force));
+
+		// NOTE: we do not copy plot or system
 	}
 
 	return *this; // to allow operator chaining: a = b = c
-} */
+}
 
 // add current position to plot matrix (increments _currentStep afterwards)
 // returns true if room, false if not
