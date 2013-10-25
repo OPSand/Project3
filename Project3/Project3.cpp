@@ -7,6 +7,7 @@
 #include <random>
 #include <assert.h>
 
+#pragma region Initialization helper methods
 // converts polar coordinates to cartesian coordinates
 vec toCartesian2D(double r, double theta)
 {
@@ -49,8 +50,9 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 	cb->position = toCartesian2D(d, theta);
 	cb->velocity = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
 }
+#pragma endregion
 
-
+#pragma region Solver
 vec derivative2D (double t, vec& posVel, CelestialBody celestialBody, SolarSystem system)
 {
 	// Two solutions to match the existing code. 
@@ -79,7 +81,6 @@ vec derivative2D (double t, vec& posVel, CelestialBody celestialBody, SolarSyste
 	derivatives[1] = posVel(3); // Derivative of the position in y
 	return derivatives;
 }
-
 
 // So this is our Runge Kutta 4 algorithm in 2D for now. 
 void rk4_2D(int dim, int h, int time,SolarSystem system, CelestialBody currentCelestialBody)
@@ -137,27 +138,30 @@ void rk4_2D(int dim, int h, int time,SolarSystem system, CelestialBody currentCe
 	
 	return;
 }
+#pragma endregion
 
-
-
+// the almighty main method!
 int _tmain(int argc, _TCHAR* argv[])
 {
+#pragma region Flags and Settings
 	// dimensions
 	const int DIM = 2;
 
 	// time steps
-	const int N_STEPS = 1000; // number of steps
+	const int N_STEPS = 200000; // number of steps
 	const double DELTA_T = 1000; // time step length (s)
-	const int PLOT_EVERY = 1; // plot every ...th step
+	const int PLOT_EVERY = 200; // plot every ...th step
 
 	// compiler flags
 	#define ADD_JUPITER	
 	#define ADD_ALL	
-	//#define DEBUG
+	// #define DEBUG
 
 	// if set to false, the Sun will never move
 	const bool FIXED_SUN = false;
+#pragma endregion
 
+#pragma region Constants
 	// masses
 	const double M_SUN = 2e30;
 	const double M_EARTH = 6e24;
@@ -204,7 +208,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double V_URANUS = 6.8e3;
 	const double V_NEPTUNE = 5.4e3;
 	const double V_PLUTO = 4.7e3;
+#pragma endregion
 
+#pragma region Initialize Solar System
 	// intitialze random number engine
 	minstd_rand eng;
 	int randomSeed = (int) clock();
@@ -244,7 +250,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		CelestialBody* pluto = new CelestialBody("Pluto", M_PLUTO, &system);
 		initial2D(pluto, D_PLUTO, V_PLUTO, &eng);
-
 #endif
 
 	if( ! FIXED_SUN )
@@ -252,6 +257,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		sun->velocity = (-system.totalMomentum() / sun->mass); // v = p/m;
 		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is 0
 	}
+#pragma endregion
 
 #ifdef DEBUG
 	system.setForces();
@@ -277,8 +283,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout << i << ": " << system.body(i)->name << endl; // output planet names
 	}
+#pragma endregion
 
 #else // not DEBUG
+#pragma region Iterate
 
 	// iterate and plot coordinates
 	for( int i = 0; i < N_STEPS; i++ ) // for each time step
@@ -305,7 +313,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 		}
 	}
+#pragma endregion
 
+#pragma region Plot
 	// plot to file for each CB
 	for( int j = 0; j < system.n(); j++ )
 	{
@@ -313,6 +323,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	cout << "Finished plotting " << (N_STEPS / PLOT_EVERY) << " of " << N_STEPS << " steps!";
+#pragma endregion
 
 #endif
 

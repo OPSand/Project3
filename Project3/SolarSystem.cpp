@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SolarSystem.h"
 
+// constructor
 SolarSystem::SolarSystem(int dim, int nSteps)
 {
 	this->_dim = dim;
@@ -8,7 +9,7 @@ SolarSystem::SolarSystem(int dim, int nSteps)
 	this->_bodies = new vector<CelestialBody*>();
 }
 
-
+// destructor
 SolarSystem::~SolarSystem(void)
 {
 	while( this->n() > 0 ) // counter will be updated automatically
@@ -20,7 +21,7 @@ SolarSystem::~SolarSystem(void)
 	delete _bodies; // delete vector
 }
 
-
+// set force vectors on all elements
 void SolarSystem::setForces(void)
 {
 	int n = this->n();
