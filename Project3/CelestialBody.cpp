@@ -33,7 +33,7 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	system->add(this);
 }
 
-// copy constructor
+/* copy constructor
 CelestialBody::CelestialBody(const CelestialBody &cb)
 {
 	this->name = cb.name;
@@ -48,7 +48,7 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 	this->velocity = cb.velocity;
 	this->force = cb.force;
 	this->plot = cb.plot;
-}
+} */
 
 // destructor
 CelestialBody::~CelestialBody(void)
@@ -56,7 +56,7 @@ CelestialBody::~CelestialBody(void)
 	// empty because we don't use new
 }
 
-// operator =
+/* operator =
 CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 {
 	if( this != &cb ) // protect against invalid self-assignment
@@ -75,7 +75,7 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 	}
 
 	return *this; // to allow operator chaining: a = b = c
-}
+} */
 
 // add current position to plot matrix (increments _currentStep afterwards)
 // returns true if room, false if not
