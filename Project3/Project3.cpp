@@ -216,6 +216,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		double newEk = -Ep; // we want total energy == 0 to ensure escape (in a 2-body simulation this is exact, else it is a limit)
 		double vFactor = sqrt(newEk/oldEk); // Ek2 / Ek1 = (v2 / v1)^2 --> v2 = sqrt(Ek2 / Ek1) * v1
 		*(earth->velocity) *= vFactor;
+
+		cout << "Escape velocity for Earth: " << norm(*(earth->velocity), DIM) << endl << endl;
 	}
 
 	if( ! FIXED_SUN )
