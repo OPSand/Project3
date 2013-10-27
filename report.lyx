@@ -87,11 +87,11 @@ It is too important to underline the fact that we will consider all the
 \end_layout
 
 \begin_layout Section
-Theory
+Theory and Technicalities
 \end_layout
 
 \begin_layout Subsection
-System Sun - Earth 
+System Sun - Earth
 \end_layout
 
 \begin_layout Standard
@@ -416,8 +416,14 @@ By using Taylor's expansion, we have
 Thus [Work in Progress !!]
 \end_layout
 
+\begin_layout Standard
+// Adding more elements to our system will just be a matter of including
+ their Forces in the equation's system.
+ Then wouhouh !
+\end_layout
+
 \begin_layout Subsection
-No idea for the name now ~
+No idea for the name now ~ Program algo
 \end_layout
 
 \begin_layout Standard
