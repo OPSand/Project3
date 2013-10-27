@@ -90,7 +90,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 2;
 
 	// time steps
-	const int TOTAL_TIME = 300 * 365 * 24 * 60 * 60; // 300 years should be sufficient for all planets to orbit the Sun at least once
+	const long TOTAL_TIME = 300 * 365 * 24 * 60 * 60; // 300 years should be sufficient for all planets to orbit the Sun at least once
 	const int STEP = 24 * 60 * 60; // step length (s)
 	const int N_STEPS = (TOTAL_TIME / STEP); // number of steps total
 	const int PLOT_EVERY = 1; // plot every ...th step
@@ -98,7 +98,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// flags
 	const bool FIXED_SUN = true; // if set to true, the Sun will never move
-	const bool CIRCULAR_EARTH = true; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
+	const bool CIRCULAR_EARTH = false; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
+	const bool ESCAPE_EARTH = true; // (ignored if CIRCULAR_EARTH == true): Gives earth its escape velocity
 	const bool ADD_JUPITER = false;
 	const double MEGA_JUPITER = 1.0; // mass multiplier for Jupiter (1.0 = normal)
 	const bool ADD_ALL = false; // include the other planets (besides Earth and Jupiter)
@@ -207,6 +208,14 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "Ek before: " << earth->Ek() << endl;
 		cout << "Ep before: " << system.Ep(earth) << endl;
 		cout << "L before: " << angMom2D(earth) << endl << endl;
+	}
+	else if ( ESCAPE_EARTH )
+	{
+		double Ep = system.Ep(earth);
+		double oldEk = earth->Ek();
+		double newEk = -Ep; // we want total energy == 0 to ensure escape (in a 2-body simulation this is exact, else it is a limit)
+		double vFactor = sqrt(newEk/oldEk); // Ek2 / Ek1 = (v2 / v1)^2 --> v2 = sqrt(Ek2 / Ek1) * v1
+		*(earth->velocity) *= vFactor;
 	}
 
 	if( ! FIXED_SUN )
