@@ -224,7 +224,7 @@ void SolarSystem::plotDim(int i, const string& path)
 	for( int j = 0; j < this->n(); j++ ) // loop through elements
 	{
 		CelestialBody* cb = this->body(j);
-		plot.col(j) = cb->plot.col(i);
+		plot.col(j) = cb->plot->col(i);
 	}
 
 	plot.save(path, raw_ascii); // save to file

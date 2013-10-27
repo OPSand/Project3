@@ -26,8 +26,8 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	this->force->fill(0);
 
 	// plot matrix
-	this->plot = mat(system->nPlot(), this->_dim);
-	plot.fill(0.0);
+	this->plot = new mat(system->nPlot(), this->_dim);
+	plot->fill(0.0);
 
 	// add to system
 	system->add(this);
@@ -47,8 +47,9 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 	this->position = new vec(*cb.position);
 	this->velocity = new vec(*cb.velocity);
 	this->force = new vec(*cb.force);
+	this->plot = new mat(*cb.plot);
 
-	// NOTE: we do not copy plot or system
+	// NOTE: we do not copy system
 }
 
 // destructor
@@ -57,8 +58,7 @@ CelestialBody::~CelestialBody(void)
 	delete this->position;
 	delete this->velocity;
 	delete this->force;
-
-	// NOTE: plot not initialized using new
+	delete this->plot;
 }
 
 // operator =
@@ -77,8 +77,9 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 		this->position = new vec(*cb.position);
 		this->velocity = new vec(*cb.velocity);
 		this->force = new vec(*cb.force);
+		this->plot = new mat(*cb.plot);
 
-		// NOTE: we do not copy plot or system
+		// NOTE: we do not copy system
 	}
 
 	return *this; // to allow operator chaining: a = b = c
@@ -88,11 +89,11 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 // returns true if room, false if not
 bool CelestialBody::plotCurrentPosition()
 {
-	if( this->_currentStep < this->plot.n_rows )
+	if( this->_currentStep < this->plot->n_rows )
 	{
-		for( int j = 0; j < this->plot.n_cols; j++ )
+		for( int j = 0; j < this->plot->n_cols; j++ )
 		{
-			this->plot(this->_currentStep, j) = this->position->at(j);
+			this->plot->at(this->_currentStep, j) = this->position->at(j);
 		}
 
 		this->_currentStep++;

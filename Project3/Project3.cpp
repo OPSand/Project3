@@ -167,7 +167,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool ADD_JUPITER = true;
 	const bool ADD_ALL = true; // include the other 7 planets
 	const bool DEBUG = false; // use for debugging only
-	const bool USE_EULER = true; // use Euler's method (for comparison)
+	const bool USE_EULER = true; // use Euler-Cromer method (for comparison)
 	const bool USE_RK4 = false; // use Runge-Kutta method
 
 	// if set to true, the Sun will never move
@@ -307,69 +307,77 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 #pragma endregion
 
-#pragma region Iterate
+#pragma region Iterate and create plots
 
-	// iterate and plot coordinates
-	for( int i = 0; i < N_STEPS; i++ ) // for each time step
+	if( USE_EULER ) // Euler-Cromer method (for comparison)
 	{
-		if( USE_EULER )
+		SolarSystem euler = system; // make deep copy of solar system
+		int n = euler.n(); // number of celestial bodies
+
+		// iterate and plot coordinates
+		for( int i = 0; i < N_STEPS; i++ ) // for each time step
 		{
 			// calculate forces/accelerations based on current postions
-			system.setForces();
-
+			euler.setForces();
+			
+			/*
 			SolarSystem k1 = system; // copy
 			k1.diff();
-			system += (k1 * STEP);
+			system += (k1 * STEP); */
 
-			/*
-			for( int j = 0; j < system.n(); j++ ) // for each celestial body
+			for( int j = 0; j < n; j++ ) // for each celestial body
 			{
-				CelestialBody* cb = system.body(j);
+				CelestialBody* cb = euler.body(j);
 
 				if( ! cb->fixed ) // a fixed celestial body will never move
 				{
 					// acc -> velocity (Euler-Cromer, for testing only)
-					cb->velocity += STEP * cb->acc();
+					*(cb->velocity) += STEP * cb->acc();
 
 					// velocity -> position (Euler-Cromer, for testing only)
-					cb->position += STEP * cb->velocity;
+					*(cb->position) += STEP * *(cb->velocity);
 				}
-			} */
-		}
-		
-		if( USE_RK4 )
-		{
-			SolarSystem copy = system;
 
-			const double HALF_STEP = 0.5 * STEP;
-
-			/* CelestialBody k1 = *cb; // make a copy
-			k1.velocity += STEP * k1.acc();
-			k1.position += STEP * k1.velocity; */
+				euler.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
+			}
 		}
 
-		system.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
+		euler.plotDim(0, "Xeuler.dat");
+		euler.plotDim(1, "Yeuler.dat");
+
+		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Euler-Cromer)!";
 	}
-
-	system.plotDim(0, "X.dat");
-	system.plotDim(1, "Y.dat");
-
-	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
-#pragma endregion
-
-#pragma region Plot
-	/* plot to file for each CB
-	for( int j = 0; j < system.n(); j++ )
+		
+	if( USE_RK4 )
 	{
-		system.body(j)->positionToFile(); // saved as "<name>.dat"
-	} */
+		int n = system.n();
+		const double HALF_STEP = 0.5 * STEP;
 
-	// plot X and Y coordinates for the entire system as matrices
-	
+		// iterate and plot coordinates
+		for( int i = 0; i < N_STEPS; i++ ) // for each time step
+		{
+			// calculate forces/accelerations based on current postions
+			system.setForces();
 
-	
+			for( int j = 0; j < n; j++ ) // for each celestial body
+			{
+				CelestialBody* cb = system.body(j);
+
+				/* CelestialBody k1 = *cb; // make a copy
+				k1.velocity += STEP * k1.acc();
+				k1.position += STEP * k1.velocity; */
+			}
+
+			system.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
+		}
+
+		system.plotDim(0, "X.dat");
+		system.plotDim(1, "Y.dat");
+
+		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!";
+	}
 #pragma endregion
-	
+
 #pragma region More debugging
 	/*
 	if ( DEBUG )

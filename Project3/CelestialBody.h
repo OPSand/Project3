@@ -22,7 +22,7 @@ public:
 	vec* velocity;
 	vec* force;
 	bool fixed;
-	mat plot;
+	mat* plot;
 
 protected:
 	int _dim;
@@ -54,6 +54,6 @@ public:
 	// plot position matrix to file (after simulation)
 	void positionToFile()
 	{
-		this->plot.save(this->name + ".dat", raw_ascii);
+		this->plot->save(this->name + ".dat", raw_ascii);
 	}
 };
