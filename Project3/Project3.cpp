@@ -51,105 +51,6 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 }
 #pragma endregion
 
-#pragma region Solver
-
-/*
-vec derivative2D (const vec& posVel, CelestialBody* celestialBody, SolarSystem* system)
-{
-	vec derivatives = vec(4);// (0): x | (1): y | (2): v_x | (3): v_y
-	vec dist = vec(2);
-	dist.zeros();
-	derivatives.zeros();
-#pragma region Recalculating the forces
-	int n = system->n();
-	for (int i= 0; i< n; i++)
-	{
-		if (system->body(i)->name == (*celestialBody).name);
-		else 
-		{
-			dist(0) = (system->body(i))->position(0) -posVel(0); // We re-evaluate the new r
-			dist(1) = (system->body(i))->position(1) - posVel(1);
-			vec r = (*celestialBody).position_diff(system->body(i)); // gives the force the proper direction ... 
-			// We update the velocity
-			derivatives(2) += (cG * (*celestialBody).mass * system->body(i)->mass / pow(dist(0), 3.0)) * r(0)*posVel(0); // Newton's law of gravity on x
-			derivatives(3) += (cG * (*celestialBody).mass * system->body(i)->mass / pow(dist(1), 3.0)) * r(0)*posVel(1); // Newton's law of gravity on y
-		}
-	}
-#pragma endregion
-	//printf("%f || \t",derivatives(2));
-	derivatives[0] = posVel(2); // Derivative of the position in x
-	derivatives[1] = posVel(3); // Derivative of the position in y
-	//printf("%f || \t", derivatives(0));
-	return derivatives;
-}
-
-// So this is our Runge Kutta 4 algorithm in 2D for now. 
-void rk4_2D(int dim, int h, int time,SolarSystem* system, CelestialBody *currentCelestialBody)
-{
-#pragma region About the first part
-	//So to begin with, we'll only study a system with two points: the sun and the earth.
-	// The method to do so is the same as the method to compute this with a lot more elements
-	// The only thing changing is the flag set in the beginning of the project3.cpp main
-#pragma endregion
-	int nbEq = dim * 2; // We have to compute the velocity + position for all our dim.
-	vec f_np1 = vec(nbEq);
-	vec k1 = vec(nbEq);
-	vec k2 = vec(nbEq);
-	vec k3 = vec(nbEq);
-	vec k4 = vec(nbEq);
-	double halfH = 0.5*h;// We are computing the RG4 with half steps.
-	vec f_n = vec(nbEq);
-	for (int i= 0 ; i< dim; i++)
-	{
-		f_n(i) = (*currentCelestialBody).position(i); // (0): position x | (1): position y
-		f_n(dim - 1 + i) = (*currentCelestialBody).velocity(i); // (2): velocity x | (3): velocity y
-	}
-#pragma region ki Computations
-	k1 = derivative2D(f_n,currentCelestialBody,system); // k1 
-	for (int i=0; i < dim; i++)
-	{
-		f_n(i) = (*currentCelestialBody).position(i) + halfH*k1(i);
-		f_n(dim - 1 + i) = (*currentCelestialBody).velocity(i) + halfH*k1(dim - 1 + i);
-	}
-	k2 = derivative2D(f_n,currentCelestialBody,system ); // k2
-	for (int i=0; i < dim; i++)
-	{
-		f_n(i) = (*currentCelestialBody).position(i) + halfH*k2(i);
-		f_n(dim - 1 + i) = (*currentCelestialBody).velocity(i) + halfH*k2(dim - 1 + i);
-	}
-	k3 = derivative2D(f_n,currentCelestialBody,system); // k3
-	for (int i=0; i < dim; i++)
-	{
-		f_n(i) = (*currentCelestialBody).position(i) + halfH*k3(i);
-		f_n(dim - 1 + i) = (*currentCelestialBody).velocity(i) + halfH*k3(dim - 1 + i);
-	}
-	k4 = derivative2D(f_n,currentCelestialBody,system); // k4
-#pragma endregion
-
-	// And finally, we update the position vector/
-	for (int i=0; i<dim;i++)
-	{
-		f_np1(i) = (*currentCelestialBody).position(i) + (double)(1/6)*h*(k1(i) + k2(i) + k3(i) + k4(i));
-		f_np1(dim - 1 + i) = (*currentCelestialBody).velocity(i) + double(1/6)*h*(k1(dim - 1 + i) + k2(dim - 1 + i) + k3(dim - 1 + i) + k4(dim - 1 + i));
-	}
-	double ini_posi = (*currentCelestialBody).position(0); // XXX : To be removed
-	printf("%f",ini_posi); // XXX : To be removed
-	
-	for(int i=0; i< dim; i++)
-	{
-		(*currentCelestialBody).position(i) = f_np1(i); 
-		(*currentCelestialBody).velocity(i) = f_np1(dim - 1 + i);
-	}
-
-	double fini_posi = (*currentCelestialBody).position(0); // XXX : To be removed
-	printf("%f:", fini_posi);// XXX : To be removed
-
-	//system.setForces();
-	
-	return;
-} */
-#pragma endregion
-
 // behold the almighty main method!
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -274,36 +175,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		*(sun->velocity) = (-system.totalMomentum() / sun->mass); // v = p/m;
 		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is actually 0
-	}
-#pragma endregion
-
-#pragma region Debugging code (Here be dragons!)
-	if( DEBUG )
-	{
-		system.setForces();
-		for( int i = 0; i < system.n(); i++ )
-		{
-			cout << system.body(i)->name << endl << endl << "Force:" << endl << system.body(i)->force << endl << "Acc:" << endl << system.body(i)->acc() << endl << "Pos:" << endl << system.body(i)->position << endl << "Vel:" << endl << system.body(i)->velocity << endl;
-		}
-
-		/* 
-		for( int i = 0; i < N_STEPS; i++ )
-		{
-			vec v(DIM);
-			v(0) = i;
-			v(1) = 2*i;
-			jupiter->position = v;
-			if( ! jupiter->plotCurrentPosition() )
-			{
-				cout << "plot matrix full! :S" << endl;
-			}
-		} 
-		cout << jupiter->plot; */
-
-		for( int i = 0; i < system.n(); i++ )
-		{
-			cout << i << ": " << system.body(i)->name << endl; // output planet names
-		}
 	}
 #pragma endregion
 
@@ -462,23 +333,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!" << endl;
 	}
-#pragma endregion
-
-#pragma region More debugging
-	/*
-	if ( DEBUG )
-	{
-		CelestialBody* Earth = system.body(1);
-		int n = system.n();
-		int t= 0;
-		while (t < N_STEPS)
-		{
-			rk4_2D(2,STEP,N_STEPS,&system,Earth);
-			printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
-			t+=STEP;
-		}
-	} */
-
 #pragma endregion
 
 	getchar(); // pause
