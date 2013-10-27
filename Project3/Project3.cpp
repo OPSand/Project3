@@ -98,11 +98,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// flags
 	const bool FIXED_SUN = true; // if set to true, the Sun will never move
-	const bool CIRCULAR_EARTH = false; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
+	const bool CIRCULAR_EARTH = true; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
 	const bool ESCAPE_EARTH = true; // (ignored if CIRCULAR_EARTH == true): Gives earth its escape velocity
-	const bool ADD_JUPITER = false;
+	const bool ADD_JUPITER = true;
 	const double MEGA_JUPITER = 1.0; // mass multiplier for Jupiter (1.0 = normal)
-	const bool ADD_ALL = false; // include the other planets (besides Earth and Jupiter)
+	const bool ADD_ALL = true; // include the other planets (besides Earth and Jupiter)
 	const bool USE_EULER = false; // use Euler-Cromer method (for comparison)
 	const bool USE_RK4 = true; // use Runge-Kutta method
 	const bool DEBUG = false; // use for debugging only
@@ -231,6 +231,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if( USE_EULER ) // Euler-Cromer method (for comparison)
 	{
+		cout << "Euler-Cromer..." << endl << endl;
+
 		SolarSystem euler = system; // make deep copy of solar system
 		int n = euler.n(); // number of celestial bodies
 
@@ -260,11 +262,13 @@ int _tmain(int argc, _TCHAR* argv[])
 		euler.plotDim(0, "Xeuler.dat");
 		euler.plotDim(1, "Yeuler.dat");
 
-		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Euler-Cromer)!" << endl;
+		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Euler-Cromer)!" << endl << endl;
 	}
 		
 	if( USE_RK4 ) // Runge-Kutta algorithm
 	{
+		cout << "Runge-Kutta..." << endl << endl;
+		
 		int n = system.n();
 
 		// iterate and plot coordinates
@@ -387,18 +391,19 @@ int _tmain(int argc, _TCHAR* argv[])
 		system.plotDim(0, "X.dat");
 		system.plotDim(1, "Y.dat");
 
-		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!" << endl;
+		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!" << endl << endl;
 	}
-#pragma endregion
 
 	if( CIRCULAR_EARTH )
 	{
 		// is the orbit still circular?
-		cout << endl << "Earth circular factor (1.0 means perfect circle): " << vCircularFactor(sun, earth, &system) << endl << endl;
+		cout << "Earth circular factor (1.0 means perfect circle): " << vCircularFactor(sun, earth, &system) << endl << endl;
 		cout << "Ek after: " << earth->Ek() << endl;
 		cout << "Ep after: " << system.Ep(earth) << endl;
-		cout << "L after: " << angMom2D(earth) << endl;
+		cout << "L after: " << angMom2D(earth) << endl << endl;
 	}
+
+#pragma endregion
 
 	cout << "Press ENTER to exit...";
 	getchar(); // pause
