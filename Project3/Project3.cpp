@@ -167,7 +167,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool ADD_JUPITER = true;
 	const bool ADD_ALL = true; // include the other 7 planets
 	const bool DEBUG = false; // use for debugging only
-	const bool USE_EULER = false; // if true, use Runge-Kutta
+	const bool USE_EULER = true; // use Euler's method (for comparison)
+	const bool USE_RK4 = false; // use Runge-Kutta method
 
 	// if set to true, the Sun will never move
 	const bool FIXED_SUN = false;
@@ -316,6 +317,11 @@ int _tmain(int argc, _TCHAR* argv[])
 			// calculate forces/accelerations based on current postions
 			system.setForces();
 
+			SolarSystem k1 = system; // copy
+			k1.diff();
+			system += k1 * STEP;
+
+			/*
 			for( int j = 0; j < system.n(); j++ ) // for each celestial body
 			{
 				CelestialBody* cb = system.body(j);
@@ -328,9 +334,10 @@ int _tmain(int argc, _TCHAR* argv[])
 					// velocity -> position (Euler-Cromer, for testing only)
 					cb->position += STEP * cb->velocity;
 				}
-			}
+			} */
 		}
-		else // use Runge-Kutta
+		
+		if( USE_RK4 )
 		{
 			SolarSystem copy = system;
 
@@ -343,6 +350,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		system.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
 	}
+
+	system.plotDim(0, "X.dat");
+	system.plotDim(1, "Y.dat");
+
+	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
 #pragma endregion
 
 #pragma region Plot
@@ -353,10 +365,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	} */
 
 	// plot X and Y coordinates for the entire system as matrices
-	system.plotDim(0, "X.dat");
-	system.plotDim(1, "Y.dat");
+	
 
-	cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps!";
+	
 #pragma endregion
 	
 #pragma region More debugging

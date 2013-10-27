@@ -41,7 +41,7 @@ SolarSystem::~SolarSystem(void)
 }
 
 // operator =
-SolarSystem SolarSystem::operator=(const SolarSystem& other)
+SolarSystem SolarSystem::operator = (const SolarSystem& other)
 {
 	if( this != &other ) // protect against invalid self-assignment
 	{
@@ -94,19 +94,19 @@ SolarSystem SolarSystem::add(SolarSystem other, bool plus)
 }
 
 // operator +
-SolarSystem SolarSystem::operator+(SolarSystem other)
+SolarSystem SolarSystem::operator + (SolarSystem other)
 {
 	return this->add(other, true);
 }
 
 // operator -
-SolarSystem SolarSystem::operator-(SolarSystem other)
+SolarSystem SolarSystem::operator - (SolarSystem other)
 {
 	return this->add(other, false);
 }
 
 // operator *
-SolarSystem SolarSystem::operator *(double factor)
+SolarSystem SolarSystem::operator * (double factor)
 {
 	SolarSystem product = *this; // deep copy
 	int n = this->n();
@@ -124,7 +124,7 @@ SolarSystem SolarSystem::operator *(double factor)
 }
 
 // operator +=
-SolarSystem SolarSystem::operator +=(SolarSystem other)
+SolarSystem SolarSystem::operator += (SolarSystem other)
 {
 	return (*this + other);
 }
@@ -228,4 +228,14 @@ void SolarSystem::plotDim(int i, const string& path)
 	}
 
 	plot.save(path, raw_ascii); // save to file
+}
+
+// differentiate (changes the current object)
+void SolarSystem::diff()
+{
+	int n = this->n();
+	for( int i = 0; i < n; i++ )
+	{
+		this->body(i)->diff();
+	}
 }

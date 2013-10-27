@@ -15,9 +15,9 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	this->_currentStep = 0;
 
 	// initialize vectors with correct dimension
-	this->position = vec(this->_dim);
-	this->velocity = vec(this->_dim);
-	this->force = vec(this->_dim);
+	this->position = *(new vec(this->_dim));
+	this->velocity = *(new vec(this->_dim));
+	this->force = *(new vec(this->_dim));
 
 	// default values
 	this->fixed = fixed;
@@ -54,7 +54,12 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 // destructor
 CelestialBody::~CelestialBody(void)
 {
-	// empty because we don't use new
+	// better if these are pointers too? or is that not how arma works? this looks like a memory leak in the making... :P
+	//delete &(this->position);
+	//delete &(this->velocity);
+	//delete &(this->force);
+
+	// NOTE: plot not initialized using new
 }
 
 // operator =
@@ -98,4 +103,21 @@ bool CelestialBody::plotCurrentPosition()
 	{
 		return false;
 	}
+}
+
+// differentiate (changes the current object)
+void CelestialBody::diff()
+{
+	if( ! this->fixed ) // moving body
+	{
+		this->position = *(new vec(this->velocity));
+		this->velocity = *(new vec(this->acc()));
+	}
+	else // a fixed body will never move
+	{
+		this->position.fill(0.0);
+		this->velocity.fill(0.0);
+	}
+
+	this->force.fill(0.0);
 }

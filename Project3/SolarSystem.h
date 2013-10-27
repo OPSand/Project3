@@ -24,6 +24,7 @@ public:
 	SolarSystem operator *(double factor);
 	SolarSystem operator +=(SolarSystem other);
 	void setForces(void);
+	void diff(void);
 
 	// return dimension of system
 	int dim(void)
