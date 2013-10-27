@@ -60,22 +60,18 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// time steps
 	const int N_STEPS = 300 * 366; // number of steps
-	const double STEP = 24 * 60 * 60; // time step length (s)
+	const double STEP = 24 * 60 * 60; // step length (s)
 	const int PLOT_EVERY = 1; // plot every ...th step
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
-	// compiler flags
-	const bool ADD_JUPITER = true;
-	const bool ADD_ALL = true; // include the other 7 planets
-	const bool DEBUG = false; // use for debugging only
+	// flags
+	const bool FIXED_SUN = true; // if set to true, the Sun will never move
+	const bool ADD_JUPITER = false;
+	const double MEGA_JUPITER = 1.0; // mass multiplier for Jupiter (1.0 = normal)
+	const bool ADD_ALL = false; // include the other planets (besides Earth and Jupiter)
 	const bool USE_EULER = true; // use Euler-Cromer method (for comparison)
 	const bool USE_RK4 = true; // use Runge-Kutta method
-
-	// if set to true, the Sun will never move
-	const bool FIXED_SUN = false;
-
-	// mass multiplier for Jupiter (1.0 = normal)
-	const double MEGA_JUPITER = 1.0;
+	const bool DEBUG = false; // use for debugging only
 #pragma endregion
 
 #pragma region Constants
@@ -251,17 +247,20 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				CelestialBody* cb = system.body(j);
 
-				// store initial position and velocity
-				orig_v.col(j) = *(cb->velocity);
-				orig_p.col(j) = *(cb->position);
+				if( ! cb->fixed ) // a fixed celestial body will never move
+				{
+					// store initial position and velocity
+					orig_v.col(j) = *(cb->velocity);
+					orig_p.col(j) = *(cb->position);
 
-				// save values
-				k1_v.col(j) = STEP * cb->acc();
-				k1_p.col(j) = STEP * *(cb->velocity);
+					// save values
+					k1_v.col(j) = STEP * cb->acc();
+					k1_p.col(j) = STEP * *(cb->velocity);
 
-				// advance to mid-point after k1
-				*(cb->velocity) = orig_v.col(j) + 0.5 * k1_v.col(j);
-				*(cb->position) = orig_p.col(j) + 0.5 * k1_p.col(j);
+					// advance to mid-point after k1
+					*(cb->velocity) = orig_v.col(j) + 0.5 * k1_v.col(j);
+					*(cb->position) = orig_p.col(j) + 0.5 * k1_p.col(j);
+				}
 			}
 
 #pragma endregion
@@ -275,13 +274,16 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				CelestialBody* cb = system.body(j);
 
-				// save values
-				k2_v.col(j) = STEP * cb->acc();
-				k2_p.col(j) = STEP * *(cb->velocity);
+				if( ! cb->fixed ) // a fixed celestial body will never move
+				{
+					// save values
+					k2_v.col(j) = STEP * cb->acc();
+					k2_p.col(j) = STEP * *(cb->velocity);
 
-				// switch to new mid-point using k2 instead
-				*(cb->velocity) = orig_v.col(j) + 0.5 * k2_v.col(j);
-				*(cb->position) = orig_p.col(j) + 0.5 * k2_p.col(j);
+					// switch to new mid-point using k2 instead
+					*(cb->velocity) = orig_v.col(j) + 0.5 * k2_v.col(j);
+					*(cb->position) = orig_p.col(j) + 0.5 * k2_p.col(j);
+				}
 			}
 
 #pragma endregion
@@ -295,13 +297,16 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				CelestialBody* cb = system.body(j);
 
-				// save values
-				k3_v.col(j) = STEP * cb->acc();
-				k3_p.col(j) = STEP * *(cb->velocity);
+				if( ! cb->fixed ) // a fixed celestial body will never move
+				{
+					// save values
+					k3_v.col(j) = STEP * cb->acc();
+					k3_p.col(j) = STEP * *(cb->velocity);
 
-				// switch to end-point
-				*(cb->velocity) = orig_v.col(j) + k3_v.col(j);
-				*(cb->position) = orig_p.col(j) + k3_p.col(j);
+					// switch to end-point
+					*(cb->velocity) = orig_v.col(j) + k3_v.col(j);
+					*(cb->position) = orig_p.col(j) + k3_p.col(j);
+				}
 			}
 
 #pragma endregion
@@ -315,13 +320,16 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				CelestialBody* cb = system.body(j);
 
-				// save values
-				k4_v.col(j) = STEP * cb->acc();
-				k4_p.col(j) = STEP * *(cb->velocity);
+				if( ! cb->fixed ) // a fixed celestial body will never move
+				{
+					// save values
+					k4_v.col(j) = STEP * cb->acc();
+					k4_p.col(j) = STEP * *(cb->velocity);
 
-				// finally, update position and velocity
-				*(cb->velocity) = orig_v.col(j) + (1.0/6.0)*(k1_v.col(j) + 2.0 * k2_v.col(j) + 2.0 * k3_v.col(j) + k4_v.col(j));
-				*(cb->position) = orig_p.col(j) + (1.0/6.0)*(k1_p.col(j) + 2.0 * k2_p.col(j) + 2.0 * k3_p.col(j) + k4_p.col(j));
+					// finally, update position and velocity
+					*(cb->velocity) = orig_v.col(j) + (1.0/6.0)*(k1_v.col(j) + 2.0 * k2_v.col(j) + 2.0 * k3_v.col(j) + k4_v.col(j));
+					*(cb->position) = orig_p.col(j) + (1.0/6.0)*(k1_p.col(j) + 2.0 * k2_p.col(j) + 2.0 * k3_p.col(j) + k4_p.col(j));
+				}
 			}
 
 #pragma endregion

@@ -19,10 +19,10 @@ public:
 	SolarSystem(const SolarSystem& other);
 	~SolarSystem(void);
 	SolarSystem operator =(const SolarSystem& other); 
-	SolarSystem operator +(SolarSystem other);
-	SolarSystem operator -(SolarSystem other);
-	SolarSystem operator *(double factor);
-	SolarSystem operator +=(SolarSystem other);
+	//SolarSystem operator +(SolarSystem other);
+	//SolarSystem operator -(SolarSystem other);
+	//SolarSystem operator *(double factor);
+	//SolarSystem operator +=(SolarSystem other);
 	void setForces(void);
 	void diff(void);
 

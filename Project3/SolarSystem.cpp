@@ -63,6 +63,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 	return *this; // to allow chaining of operators
 }
 
+/*
 SolarSystem SolarSystem::add(SolarSystem other, bool plus)
 {
 	// check that dimensions and number of celestial bodies
@@ -128,6 +129,7 @@ SolarSystem SolarSystem::operator += (SolarSystem other)
 {
 	return (*this + other);
 }
+*/
 
 // set force vectors on all elements
 void SolarSystem::setForces(void)
