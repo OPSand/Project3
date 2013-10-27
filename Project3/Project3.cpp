@@ -49,6 +49,17 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 	*(cb->position) = toCartesian2D(d, theta);
 	*(cb->velocity) = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
 }
+
+// return the factor needed to make an orbit circular in a 2-body problem
+double vCircularFactor(CelestialBody* cbBig, CelestialBody* cbSmall, SolarSystem* system)
+{
+	system->setForces(); // we'll need the correct acceleration
+
+	// we will assume that the angles are already orthogonal, but the absolute values may not be correct
+	double vActual = norm(*(cbSmall->velocity), system->dim());
+	double vCirc = sqrt(norm(cbSmall->acc(), system->dim()) * cbSmall->dist(cbBig)); // v^2 = a * r
+	return (vCirc/vActual); // the factor needed to make the orbit circular
+}
 #pragma endregion
 
 // behold the almighty main method!
@@ -59,8 +70,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 2;
 
 	// time steps
-	const int N_STEPS = 300 * 366; // number of steps
-	const double STEP = 24 * 60 * 60; // step length (s)
+	const int TOTAL_TIME = 300 * 365 * 24 * 60 * 60; // 300 years should be sufficient for all planets to orbit the Sun at least once
+	const int STEP = 24 * 60 * 60; // step length (s)
+	const int N_STEPS = (TOTAL_TIME / STEP); // number of steps total
 	const int PLOT_EVERY = 1; // plot every ...th step
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
@@ -170,12 +182,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if( CIRCULAR_EARTH )
 	{
-		system.setForces(); // we'll need the correct acceleration (NOTE: This assumes a 2-body problem)
-
-		// the angles are already orthogonal, but the absolute values may not be correct
-		double vEarth = norm(*(earth->velocity), DIM);
-		double vCirc = sqrt(norm(earth->acc(), DIM) * earth->dist(sun)); // v^2 = a * r
-		*(earth->velocity) *= (vCirc/vEarth); // make the orbit circular
+		*(earth->velocity) *= vCircularFactor(sun, earth, &system); // make the orbit circular
 	}
 
 	if( ! FIXED_SUN )
@@ -348,6 +355,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!" << endl;
 	}
 #pragma endregion
+
+	if( CIRCULAR_EARTH )
+	{
+		// is the orbit still circular?
+		cout << "Earth circular factor (1.0 means perfect circle): " << vCircularFactor(sun, earth, &system) << endl;
+	}
 
 	cout << "Press ENTER to exit...";
 	getchar(); // pause
