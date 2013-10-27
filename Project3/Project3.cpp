@@ -168,7 +168,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool ADD_ALL = true; // include the other 7 planets
 	const bool DEBUG = false; // use for debugging only
 	const bool USE_EULER = true; // use Euler-Cromer method (for comparison)
-	const bool USE_RK4 = false; // use Runge-Kutta method
+	const bool USE_RK4 = true; // use Runge-Kutta method
 
 	// if set to true, the Sun will never move
 	const bool FIXED_SUN = false;
@@ -317,10 +317,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		// iterate and plot coordinates
 		for( int i = 0; i < N_STEPS; i++ ) // for each time step
 		{
+			euler.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
+
 			// calculate forces/accelerations based on current postions
 			euler.setForces();
 			
-			/*
+			/* // so, so slow...
 			SolarSystem k1 = system; // copy
 			k1.diff();
 			system += (k1 * STEP); */
@@ -337,25 +339,40 @@ int _tmain(int argc, _TCHAR* argv[])
 					// velocity -> position (Euler-Cromer, for testing only)
 					*(cb->position) += STEP * *(cb->velocity);
 				}
-
-				euler.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
 			}
 		}
 
 		euler.plotDim(0, "Xeuler.dat");
 		euler.plotDim(1, "Yeuler.dat");
 
-		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Euler-Cromer)!";
+		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Euler-Cromer)!" << endl;
 	}
 		
-	if( USE_RK4 )
+	if( USE_RK4 ) // Runge-Kutta algorithm
 	{
 		int n = system.n();
-		const double HALF_STEP = 0.5 * STEP;
 
 		// iterate and plot coordinates
 		for( int i = 0; i < N_STEPS; i++ ) // for each time step
 		{
+			system.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
+
+			// matrices for Runge-Kutta values:
+			mat k1_v(DIM, n); // k1, velocity
+			mat k1_p(DIM, n); // k1, position
+			mat k2_v(DIM, n); // k2, velocity (etc.)
+			mat k2_p(DIM, n);
+			mat k3_v(DIM, n);
+			mat k3_p(DIM, n);
+			mat k4_v(DIM, n);
+			mat k4_p(DIM, n);
+
+			// initial position and velocity for each celestial body
+			mat orig_v(DIM, n);
+			mat orig_p(DIM, n);
+
+#pragma region k1
+
 			// calculate forces/accelerations based on current postions
 			system.setForces();
 
@@ -363,18 +380,87 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				CelestialBody* cb = system.body(j);
 
-				/* CelestialBody k1 = *cb; // make a copy
-				k1.velocity += STEP * k1.acc();
-				k1.position += STEP * k1.velocity; */
+				// store initial position and velocity
+				orig_v.col(j) = *(cb->velocity);
+				orig_p.col(j) = *(cb->position);
+
+				// save values
+				k1_v.col(j) = STEP * cb->acc();
+				k1_p.col(j) = STEP * *(cb->velocity);
+
+				// advance to mid-point after k1
+				*(cb->velocity) = orig_v.col(j) + 0.5 * k1_v.col(j);
+				*(cb->position) = orig_p.col(j) + 0.5 * k1_p.col(j);
 			}
 
-			system.plotCurrentPositions( i % PLOT_EVERY == 0 ); // if we want to plot this step, do it
+#pragma endregion
+
+#pragma region k2
+
+			// calculate forces/accelerations based on current postions
+			system.setForces();
+
+			for( int j = 0; j < n; j++ ) // for each celestial body
+			{
+				CelestialBody* cb = system.body(j);
+
+				// save values
+				k2_v.col(j) = STEP * cb->acc();
+				k2_p.col(j) = STEP * *(cb->velocity);
+
+				// switch to new mid-point using k2 instead
+				*(cb->velocity) = orig_v.col(j) + 0.5 * k2_v.col(j);
+				*(cb->position) = orig_p.col(j) + 0.5 * k2_p.col(j);
+			}
+
+#pragma endregion
+
+#pragma region k3
+
+			// calculate forces/accelerations based on current postions
+			system.setForces();
+
+			for( int j = 0; j < n; j++ ) // for each celestial body
+			{
+				CelestialBody* cb = system.body(j);
+
+				// save values
+				k3_v.col(j) = STEP * cb->acc();
+				k3_p.col(j) = STEP * *(cb->velocity);
+
+				// switch to end-point
+				*(cb->velocity) = orig_v.col(j) + k3_v.col(j);
+				*(cb->position) = orig_p.col(j) + k3_p.col(j);
+			}
+
+#pragma endregion
+
+#pragma region k4
+
+			// calculate forces/accelerations based on current postions
+			system.setForces();
+
+			for( int j = 0; j < n; j++ ) // for each celestial body
+			{
+				CelestialBody* cb = system.body(j);
+
+				// save values
+				k4_v.col(j) = STEP * cb->acc();
+				k4_p.col(j) = STEP * *(cb->velocity);
+
+				// finally, update position and velocity
+				*(cb->velocity) = orig_v.col(j) + (1.0/6.0)*(k1_v.col(j) + 2.0 * k2_v.col(j) + 2.0 * k3_v.col(j) + k4_v.col(j));
+				*(cb->position) = orig_p.col(j) + (1.0/6.0)*(k1_p.col(j) + 2.0 * k2_p.col(j) + 2.0 * k3_p.col(j) + k4_p.col(j));
+			}
+
+#pragma endregion
+
 		}
 
 		system.plotDim(0, "X.dat");
 		system.plotDim(1, "Y.dat");
 
-		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!";
+		cout << "Finished plotting " << N_PLOT << " of " << N_STEPS << " steps (Runge-Kutta)!" << endl;
 	}
 #pragma endregion
 
