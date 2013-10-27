@@ -66,10 +66,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// flags
 	const bool FIXED_SUN = true; // if set to true, the Sun will never move
+	const bool CIRCULAR_EARTH = true; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
 	const bool ADD_JUPITER = false;
 	const double MEGA_JUPITER = 1.0; // mass multiplier for Jupiter (1.0 = normal)
 	const bool ADD_ALL = false; // include the other planets (besides Earth and Jupiter)
-	const bool USE_EULER = true; // use Euler-Cromer method (for comparison)
+	const bool USE_EULER = false; // use Euler-Cromer method (for comparison)
 	const bool USE_RK4 = true; // use Runge-Kutta method
 	const bool DEBUG = false; // use for debugging only
 #pragma endregion
@@ -165,6 +166,16 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		CelestialBody* pluto = new CelestialBody("Pluto", M_PLUTO, &system);
 		initial2D(pluto, D_PLUTO, V_PLUTO, &eng);
+	}
+
+	if( CIRCULAR_EARTH )
+	{
+		system.setForces(); // we'll need the correct acceleration (NOTE: This assumes a 2-body problem)
+
+		// the angles are already orthogonal, but the absolute values may not be correct
+		double vEarth = norm(*(earth->velocity), DIM);
+		double vCirc = sqrt(norm(earth->acc(), DIM) * earth->dist(sun)); // v^2 = a * r
+		*(earth->velocity) *= (vCirc/vEarth); // make the orbit circular
 	}
 
 	if( ! FIXED_SUN )
@@ -338,6 +349,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 #pragma endregion
 
+	cout << "Press ENTER to exit...";
 	getchar(); // pause
 
 	return 0; // exit
