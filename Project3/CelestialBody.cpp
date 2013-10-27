@@ -15,15 +15,15 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	this->_currentStep = 0;
 
 	// initialize vectors with correct dimension
-	this->position = *(new vec(this->_dim));
-	this->velocity = *(new vec(this->_dim));
-	this->force = *(new vec(this->_dim));
+	this->position = new vec(this->_dim);
+	this->velocity = new vec(this->_dim);
+	this->force = new vec(this->_dim);
 
 	// default values
 	this->fixed = fixed;
-	this->position.fill(0);
-	this->velocity.fill(0);
-	this->force.fill(0);
+	this->position->fill(0);
+	this->velocity->fill(0);
+	this->force->fill(0);
 
 	// plot matrix
 	this->plot = mat(system->nPlot(), this->_dim);
@@ -44,9 +44,9 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 	this->fixed = cb.fixed;
 
 	// These may be changed, so we copy them
-	this->position = *(new vec(cb.position));
-	this->velocity = *(new vec(cb.velocity));
-	this->force = *(new vec(cb.force));
+	this->position = new vec(*cb.position);
+	this->velocity = new vec(*cb.velocity);
+	this->force = new vec(*cb.force);
 
 	// NOTE: we do not copy plot or system
 }
@@ -54,10 +54,9 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 // destructor
 CelestialBody::~CelestialBody(void)
 {
-	// better if these are pointers too? or is that not how arma works? this looks like a memory leak in the making... :P
-	//delete &(this->position);
-	//delete &(this->velocity);
-	//delete &(this->force);
+	delete this->position;
+	delete this->velocity;
+	delete this->force;
 
 	// NOTE: plot not initialized using new
 }
@@ -75,9 +74,9 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 		this->fixed = cb.fixed;
 
 		// These may be changed, so we copy them
-		this->position = *(new vec(cb.position));
-		this->velocity = *(new vec(cb.velocity));
-		this->force = *(new vec(cb.force));
+		this->position = new vec(*cb.position);
+		this->velocity = new vec(*cb.velocity);
+		this->force = new vec(*cb.force);
 
 		// NOTE: we do not copy plot or system
 	}
@@ -93,7 +92,7 @@ bool CelestialBody::plotCurrentPosition()
 	{
 		for( int j = 0; j < this->plot.n_cols; j++ )
 		{
-			this->plot(this->_currentStep, j) = this->position(j);
+			this->plot(this->_currentStep, j) = this->position->at(j);
 		}
 
 		this->_currentStep++;
@@ -110,14 +109,12 @@ void CelestialBody::diff()
 {
 	if( ! this->fixed ) // moving body
 	{
-		this->position = *(new vec(this->velocity));
-		this->velocity = *(new vec(this->acc()));
+		this->position = new vec(*this->velocity);
+		this->velocity = new vec(this->acc());
 	}
 	else // a fixed body will never move
 	{
-		this->position.fill(0.0);
-		this->velocity.fill(0.0);
+		this->position->fill(0.0);
+		this->velocity->fill(0.0);
 	}
-
-	this->force.fill(0.0);
 }

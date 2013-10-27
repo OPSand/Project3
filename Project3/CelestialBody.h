@@ -18,9 +18,9 @@ public:
 	void diff(void);
 	string name;
 	double mass;
-	vec position;
-	vec velocity;
-	vec force;
+	vec* position;
+	vec* velocity;
+	vec* force;
 	bool fixed;
 	mat plot;
 
@@ -32,13 +32,13 @@ public:
 	// returns the acceleration when the force is set
 	vec acc(void)
 	{
-		return (this->force/this->mass);
+		return (*(this->force)/this->mass);
 	}
 
 	// returns the position of cb relative to this in vector form
 	vec position_diff(CelestialBody* cb)
 	{
-		return (cb->position - this->position);
+		return (*(cb->position) - *(this->position));
 	}
 
 	// returns the distance between this and cb as a scalar

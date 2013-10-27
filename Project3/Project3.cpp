@@ -46,14 +46,14 @@ void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double t
 		// create random angle
 		theta = randDbl(0.0, (2*cPI), eng);
 	}
-	cb->position = toCartesian2D(d, theta);
-	cb->velocity = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
+	*(cb->position) = toCartesian2D(d, theta);
+	*(cb->velocity) = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
 }
 #pragma endregion
 
 #pragma region Solver
 
-
+/*
 vec derivative2D (const vec& posVel, CelestialBody* celestialBody, SolarSystem* system)
 {
 	vec derivatives = vec(4);// (0): x | (1): y | (2): v_x | (3): v_y
@@ -147,7 +147,7 @@ void rk4_2D(int dim, int h, int time,SolarSystem* system, CelestialBody *current
 	//system.setForces();
 	
 	return;
-}
+} */
 #pragma endregion
 
 // behold the almighty main method!
@@ -272,7 +272,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if( ! FIXED_SUN )
 	{
-		sun->velocity = (-system.totalMomentum() / sun->mass); // v = p/m;
+		*(sun->velocity) = (-system.totalMomentum() / sun->mass); // v = p/m;
 		//assert( norm(system.totalMomentum(), DIM) == 0.0 ); // check that total momentum is actually 0
 	}
 #pragma endregion
@@ -319,7 +319,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			SolarSystem k1 = system; // copy
 			k1.diff();
-			system += k1 * STEP;
+			system += (k1 * STEP);
 
 			/*
 			for( int j = 0; j < system.n(); j++ ) // for each celestial body
@@ -371,6 +371,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #pragma endregion
 	
 #pragma region More debugging
+	/*
 	if ( DEBUG )
 	{
 		CelestialBody* Earth = system.body(1);
@@ -382,7 +383,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			printf("t: % d | x: %f | y %f \t vx: %f | vy: %f",t,Earth->position(0),Earth->position(1),Earth->velocity(0),Earth->velocity(1));
 			t+=STEP;
 		}
-	}
+	} */
+
 #pragma endregion
 
 	getchar(); // pause

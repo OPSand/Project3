@@ -80,13 +80,13 @@ SolarSystem SolarSystem::add(SolarSystem other, bool plus)
 		// add/subtract velocities and positions
 		if( plus ) // +
 		{
-			sumBody->velocity += otherBody->velocity;
-			sumBody->position += otherBody->position;
+			*(sumBody->velocity) += *(otherBody->velocity);
+			*(sumBody->position) += *(otherBody->position);
 		}
 		else // -
 		{
-			sumBody->velocity -= otherBody->velocity;
-			sumBody->position -= otherBody->position;
+			*(sumBody->velocity) -= *(otherBody->velocity);
+			*(sumBody->position) -= *(otherBody->position);
 		}
 	}
 
@@ -116,8 +116,8 @@ SolarSystem SolarSystem::operator * (double factor)
 		CelestialBody* prodBody = product.body(i);
 
 		// multiply position and velocity with factor
-		prodBody->velocity *= factor;
-		prodBody->position *= factor;
+		*(prodBody->velocity) *= factor;
+		*(prodBody->position) *= factor;
 	}
 
 	return product;
@@ -140,7 +140,7 @@ void SolarSystem::setForces(void)
 		// reset on first pass (0)
 		if( i == 0 )
 		{
-			cb_i->force.fill(0);
+			cb_i->force->fill(0.0);
 		}
 
 		for( int j = (i + 1); j < n; j++ ) // j: i+1 -> n-1
@@ -150,15 +150,15 @@ void SolarSystem::setForces(void)
 			// reset on first pass (1 -> n-1)
 			if( i == 0 )
 			{
-				cb_j->force.fill(0.0);
+				cb_j->force->fill(0.0);
 			}
 			
 			double dist = cb_i->dist(cb_j); // distance (absolute value)
 			vec r = cb_i->position_diff(cb_j); // gives the force the proper direction
 			vec F = (cG * cb_i->mass * cb_j->mass / pow(dist, 3.0)) * r; // Newton's law of gravity
 
-			cb_i->force += F; // add force contribution to i
-			cb_j->force -= F; // add force contribution to j (Newton's 3rd law)
+			*(cb_i->force) += F; // add force contribution to i
+			*(cb_j->force) -= F; // add force contribution to j (Newton's 3rd law)
 		}
 	}
 }
@@ -186,7 +186,7 @@ vec SolarSystem::totalMomentum()
 		CelestialBody* cb_i = this->body(i);
 		if( ! cb_i->fixed ) // fixed bodies never move
 		{
-			mom += (cb_i->mass * cb_i->velocity); // add p = m*v (non-relativistic)
+			mom += (cb_i->mass * *(cb_i->velocity)); // add p = m*v (non-relativistic)
 		}
 	}
 
