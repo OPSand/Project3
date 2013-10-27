@@ -23,6 +23,7 @@ public:
 	vec* force;
 	bool fixed;
 	mat* plot;
+	double Ek(void);
 
 protected:
 	int _dim;

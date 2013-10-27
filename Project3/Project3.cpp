@@ -16,6 +16,15 @@ vec toCartesian2D(double r, double theta)
 	return p;
 }
 
+// return the angle (in radians) between two vectors in 2D
+double angle2D(vec a, vec b)
+{
+	double aAbs = norm(a, 2);
+	double bAbs = norm(b, 2);
+	double ab = dot(a, b);
+	return acos(ab/(aAbs*bAbs));
+}
+
 // returns an angle in radians that is orthogonal to theta
 double orthogonal2D(double theta, bool clockwise = false)
 {
@@ -59,6 +68,17 @@ double vCircularFactor(CelestialBody* cbBig, CelestialBody* cbSmall, SolarSystem
 	double vActual = norm(*(cbSmall->velocity), system->dim());
 	double vCirc = sqrt(norm(cbSmall->acc(), system->dim()) * cbSmall->dist(cbBig)); // v^2 = a * r
 	return (vCirc/vActual); // the factor needed to make the orbit circular
+}
+
+// return the size of the angular momentum in 2D
+double angMom2D(CelestialBody* cb)
+{
+	vec* r = cb->position;
+	vec* v = cb->velocity;
+	vec p = cb->mass * *v;
+	double rAbs = norm(*r, 2);
+	double pAbs = norm(p, 2);
+	return rAbs * pAbs * sin(angle2D(*r, p));
 }
 #pragma endregion
 
@@ -183,6 +203,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	if( CIRCULAR_EARTH )
 	{
 		*(earth->velocity) *= vCircularFactor(sun, earth, &system); // make the orbit circular
+
+		cout << "Ek before: " << earth->Ek() << endl;
+		cout << "Ep before: " << system.Ep(earth) << endl;
+		cout << "L before: " << angMom2D(earth) << endl << endl;
 	}
 
 	if( ! FIXED_SUN )
@@ -359,7 +383,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	if( CIRCULAR_EARTH )
 	{
 		// is the orbit still circular?
-		cout << "Earth circular factor (1.0 means perfect circle): " << vCircularFactor(sun, earth, &system) << endl;
+		cout << endl << "Earth circular factor (1.0 means perfect circle): " << vCircularFactor(sun, earth, &system) << endl << endl;
+		cout << "Ek after: " << earth->Ek() << endl;
+		cout << "Ep after: " << system.Ep(earth) << endl;
+		cout << "L after: " << angMom2D(earth) << endl;
 	}
 
 	cout << "Press ENTER to exit...";

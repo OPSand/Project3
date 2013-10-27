@@ -119,3 +119,10 @@ void CelestialBody::diff()
 		this->velocity->fill(0.0);
 	}
 }
+
+// kinetic energy
+double CelestialBody::Ek()
+{
+	double v2 = dot(*(this->velocity), *(this->velocity)); // inner product equals v^2
+	return (0.5 * this->mass * v2);
+}

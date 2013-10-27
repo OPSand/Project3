@@ -63,74 +63,6 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 	return *this; // to allow chaining of operators
 }
 
-/*
-SolarSystem SolarSystem::add(SolarSystem other, bool plus)
-{
-	// check that dimensions and number of celestial bodies
-	assert( this->n() == other.n() );
-	assert( this->dim() == other.dim() );
-
-	SolarSystem sum = *this; // deep copy
-	int n = this->n();
-
-	for( int i = 0; i < n; i++ )
-	{
-		CelestialBody* sumBody = sum.body(i); // HELP! I just need sumBody... HELP! not just anyBody...
-		CelestialBody* otherBody = other.body(i);
-
-		// add/subtract velocities and positions
-		if( plus ) // +
-		{
-			*(sumBody->velocity) += *(otherBody->velocity);
-			*(sumBody->position) += *(otherBody->position);
-		}
-		else // -
-		{
-			*(sumBody->velocity) -= *(otherBody->velocity);
-			*(sumBody->position) -= *(otherBody->position);
-		}
-	}
-
-	return sum;
-}
-
-// operator +
-SolarSystem SolarSystem::operator + (SolarSystem other)
-{
-	return this->add(other, true);
-}
-
-// operator -
-SolarSystem SolarSystem::operator - (SolarSystem other)
-{
-	return this->add(other, false);
-}
-
-// operator *
-SolarSystem SolarSystem::operator * (double factor)
-{
-	SolarSystem product = *this; // deep copy
-	int n = this->n();
-
-	for( int i = 0; i < n; i++ )
-	{
-		CelestialBody* prodBody = product.body(i);
-
-		// multiply position and velocity with factor
-		*(prodBody->velocity) *= factor;
-		*(prodBody->position) *= factor;
-	}
-
-	return product;
-}
-
-// operator +=
-SolarSystem SolarSystem::operator += (SolarSystem other)
-{
-	return (*this + other);
-}
-*/
-
 // set force vectors on all elements
 void SolarSystem::setForces(void)
 {
@@ -220,10 +152,11 @@ bool SolarSystem::plotCurrentPositions(bool condition)
 // save dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
 void SolarSystem::plotDim(int i, const string& path)
 {
-	assert(i < this->dim());
+	assert(i < this->dim() );
 
-	mat plot(this->nPlot(), this->n());
-	for( int j = 0; j < this->n(); j++ ) // loop through elements
+	int n = this->n();
+	mat plot(this->nPlot(), n);
+	for( int j = 0; j < n; j++ ) // loop through elements
 	{
 		CelestialBody* cb = this->body(j);
 		plot.col(j) = cb->plot->col(i);
@@ -232,12 +165,31 @@ void SolarSystem::plotDim(int i, const string& path)
 	plot.save(path, raw_ascii); // save to file
 }
 
-// differentiate (changes the current object)
-void SolarSystem::diff()
+// returns the potential energy of the element cb (if it exists in the system)
+double SolarSystem::Ep(CelestialBody* cb)
 {
 	int n = this->n();
-	for( int i = 0; i < n; i++ )
+
+	double potEnergy = 0;
+
+	int i = 0;
+	while( this->body(i) != cb )
 	{
-		this->body(i)->diff();
+		i++; // wrong planet, increase index
 	}
+	
+	assert( i < n ); // triggers if cb is not part of the system (then i == n)
+	CelestialBody* cb_i = this->body(i);
+	
+	// for all other celestial bodies
+	for( int j = 0; j < n; j++ )
+	{
+		if( i != j ) // don't add potential energy from self
+		{
+			CelestialBody* cb_j = this->body(j);
+			potEnergy -= (cG * cb_j->mass / cb_i->dist(cb_j)); // potential energy is negative
+		}
+	}
+
+	return potEnergy;
 }
