@@ -188,11 +188,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			// calculate forces/accelerations based on current postions
 			euler.setForces();
-			
-			/* // so, so slow...
-			SolarSystem k1 = system; // copy
-			k1.diff();
-			system += (k1 * STEP); */
 
 			for( int j = 0; j < n; j++ ) // for each celestial body
 			{
