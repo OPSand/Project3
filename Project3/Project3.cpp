@@ -85,6 +85,8 @@ double angMom2D(CelestialBody* cb)
 // behold the almighty main method!
 int _tmain(int argc, _TCHAR* argv[])
 {
+	long long ago; // in a galaxy far, far away...
+
 #pragma region Flags and Settings
 	// dimensions
 	const int DIM = 2;
@@ -97,9 +99,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
 	// flags
-	const bool FIXED_SUN = true; // if set to true, the Sun will never move
-	const bool CIRCULAR_EARTH = true; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
-	const bool ESCAPE_EARTH = true; // (ignored if CIRCULAR_EARTH == true): Gives earth its escape velocity
+	const bool FIXED_SUN = false; // if set to true, the Sun will never move
+	const bool CIRCULAR_EARTH = false; // if set to true, the Earth will follow a circular orbit (around an unmoving Sun)
+	const bool ESCAPE_EARTH = false; // (ignored if CIRCULAR_EARTH == true): Gives earth its escape velocity
 	const bool ADD_JUPITER = true;
 	const double MEGA_JUPITER = 1.0; // mass multiplier for Jupiter (1.0 = normal)
 	const bool ADD_ALL = true; // include the other planets (besides Earth and Jupiter)
