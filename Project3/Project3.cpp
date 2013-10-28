@@ -92,9 +92,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 2;
 
 	// time steps
-	const long TOTAL_TIME = 300 * 365 * 24 * 60 * 60; // 300 years should be sufficient for all planets to orbit the Sun at least once
 	const int STEP = 24 * 60 * 60; // step length (s)
-	const int N_STEPS = (TOTAL_TIME / STEP); // number of steps total
+	const int N_STEPS = 300 * 365; // number of steps total
 	const int PLOT_EVERY = 1; // plot every ...th step
 	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
