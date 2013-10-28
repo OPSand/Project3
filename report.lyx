@@ -67,6 +67,17 @@ Project 3, FYS 3150 / 4150, fall 2013
 Odd Petter Sand and Nathalie Bonatout 
 \end_layout
 
+\begin_layout Standard
+All our source code can be found at our GitHub repository: 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/OPSand/Project3/"
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -81,7 +92,7 @@ The aim for this third project is to create an algorithm which should be
  Then, we will progressively add more and more planets to our system.
  The main mathematical tool we will use to study this system is the Runge
  Kutta 4th order method.
- One of the main point here is to study the stability of our algorithm,
+ One of the main points here is to study the stability of our algorithm,
  thanks to the initial conditions that we will apply to our system.
 \end_layout
 
@@ -1012,6 +1023,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Screens Report/Moving_Sun_1.png
+	lyxscale 40
 	scale 40
 
 \end_inset
@@ -1098,13 +1110,9 @@ status open
 
 \begin_layout Plain Layout
 Source : 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://nssdc.gsfc.nasa.gov/planetary/factsheet/
-\end_layout
+\begin_inset CommandInset href
+LatexCommand href
+target "http://nssdc.gsfc.nasa.gov/planetary/factsheet/"
 
 \end_inset
 
@@ -1377,9 +1385,49 @@ status open
 
 \begin_layout Plain Layout
 \align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename Screens Report/All_Planets_Small_TimePeriod.png
-	scale 40
+	filename Project3/allplanets.png
+	lyxscale 20
+	scale 20
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Entire system
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Sun.png
+	scale 60
 
 \end_inset
 
@@ -1390,7 +1438,28 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+Sun's motion
+\end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Results with Runge-Kutta's method
 \end_layout
 
 \end_inset
@@ -1401,6 +1470,59 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+We too implemented the Euler-Cromer method, to check our result against
+ those of another algorithm.
+ This is the results that we got:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Euler_All.png
+	lyxscale 50
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Results with Euler-Cromer's method
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can see that even once the all system is added, our algorithm is rather
+ stable, and the results seem pretty coherent.
+ 
+\end_layout
+
+\begin_layout Standard
+We can too notice that the motion of the Sun changed a little after we added
+ the other planets, but that everything still behave as we expect it to.
 \end_layout
 
 \begin_layout Subsection
@@ -1416,7 +1538,23 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-From this project, we learned that 
+From this project, we learned 
+\end_layout
+
+\begin_layout Itemize
+that writing an object-oriented code is easier is time is taken beforehand
+ to look at the entire project.
+ Indeed, we avoided rewriting classes again and again, after reflecting
+ on the structure of our code before beginning to write it.
+\end_layout
+
+\begin_layout Itemize
+the importance of checking the stability of our algorithm with our initial
+ conditionss
+\end_layout
+
+\begin_layout Itemize
+some technical specificities of C++, such as what are deep and shallow copies
 \end_layout
 
 \end_body
