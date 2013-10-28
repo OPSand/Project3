@@ -423,7 +423,39 @@ Thus [Work in Progress !!]
 \end_layout
 
 \begin_layout Subsection
-No idea for the name now ~ Program algo
+Structure and tools of the code
+\end_layout
+
+\begin_layout Standard
+To solve this problem, we wrote a Runge Kutta of 4 order, in the object-oriented
+ style.
+ Thus, we created two main classes:
+\end_layout
+
+\begin_layout Itemize
+CelestialBody, the class describing every objects of the solar system.
+ A celestialBody contains characteristics such as a name, a mass, or vectors
+ defining the position, the velocity and the force exerced by other objects,
+ and a boolean, to decide wether the current object should be seen by our
+ algorithm as fixed, or not.
+ This feature will be very useful at first, to test our algorithm on a two
+ bodies system.
+\end_layout
+
+\begin_layout Itemize
+SolarSystem, which is basically an array of CelestialBodies.
+ Thus, this class will be used to determine the force exerced by other objects,
+ body after body, and will also be used to plot our system.
+\end_layout
+
+\begin_layout Standard
+Another class, constants, is, as we can expect it, a container of all the
+ astrophysic constants that were useful for this project.
+\end_layout
+
+\begin_layout Standard
+And to finish about program flow, all these classes were used in a main
+ class, which was our controller.
 \end_layout
 
 \begin_layout Standard
@@ -436,7 +468,7 @@ status collapsed
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename C:/Users/Natsu/Desktop/Class.png
+	filename ClassDiagram.png
 	scale 60
 
 \end_inset
@@ -449,15 +481,57 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
-\begin_inset Quotes eld
-\end_inset
-
 Class Diagram
-\begin_inset Quotes erd
+\end_layout
+
 \end_inset
 
- ...
- Should evolved ;p
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Subsection
+Earth - Sun system
+\end_layout
+
+\begin_layout Standard
+Escape velocity: We now consider a planet which begins at a distance of
+ 1 AU from the Sun.
+ We found that an initial velocity for this planet equal to 1.72464 m.s-1
+ results in its escape from the Sun.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Escapte_Earth_Velocity.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Escape from the Solar system
 \end_layout
 
 \end_inset
@@ -474,8 +548,259 @@ Class Diagram
 
 \end_layout
 
-\begin_layout Section
-Results
+\begin_layout Subsection
+Earth - Jupiter - Sun system
+\end_layout
+
+\begin_layout Subsubsection
+Adding Jupiter
+\end_layout
+
+\begin_layout Standard
+Among all the planets of the solar system, we chose Jupiter since it was
+ the planet which has the biggest mass.
+ Indeed, its mass is only 1000 times smaller than the mass of the Sun.
+ Thus, Jupiter's influence in the solar system will be the biggest, after
+ the sun's.
+\end_layout
+
+\begin_layout Standard
+The main point here is to study the stability of the results after adding
+ Jupiter into our system.
+ Then, we will change the mass of Jupiter, by multiplying it at first by
+ a factor of 10, then by a factor of 1000.
+ We expect that the change will be really small with a factor of 10, but
+ that our system won't be stable with the 1000 factor.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Jpiter_Eart_Sun_1.png
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+With the real mass of Jupiter
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Jpiter_Eart_Sun_10.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+With the 10* mass of Jupiter
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Jpiter_Eart_Sun_1000.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+With the 1000* mass of Jupiter
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Thanks to the plots, we can check that indeed, once that the mass of Jupiter
+ becomes equal to the mass of the Sun, the stability of our algorithm becomes
+ questionable:
+\end_layout
+
+\begin_layout Subsubsection
+Moving Sun
+\end_layout
+
+\begin_layout Standard
+To get closer to the real system, we now consider that the Sun is moving.
+ To do so, we will take the center of mass of our system not on the sun
+ anymore, but on the origin of our system.
+ Furthermore, we want the total momentum of the system to be 0, thus, we
+ will evaluate the initial velocity of the sun as follow:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+v_{Sun}=-\frac{\sum m_{Planet}*v_{Planet}}{m_{Sun}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Moving_Sun_1.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sun - Jupiter - Earth in motion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Screens Report/Moving_Sun_2.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sun - Jupiter - Earth in motion - Sun's motion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Extending the algorithm to all the planets of the Solar system
+\end_layout
+
+\begin_layout Standard
+Since our algorithm was written with the goal of being used for the entire
+ Solar system, adding the other planets was only a matter of increasing
+ the number of CelestialBodies.
+\end_layout
+
+\begin_layout Subsection
+Perihelion precession of Mercury
+\end_layout
+
+\begin_layout Standard
+// If you want to write something about the theory here ?
 \end_layout
 
 \begin_layout Section
